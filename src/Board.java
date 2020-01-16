@@ -1,5 +1,8 @@
 import Marble.Marble;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class Board {
@@ -230,6 +233,82 @@ public class Board {
                 setup4();
                 break;
         }
+    }
+
+    private boolean isDiagonal(ArrayList<Pair<Integer, Integer>> cells) {
+        Pair<Integer, Integer> p1, p2;
+        p1 = cells.get(0);
+        for (int i = 1; i < cells.size(); i++) {
+            p2 = cells.get(i);
+            if (Math.abs(p1.first() - p2.first()) != 1 || Math.abs(p1.second() - p2.second()) != 1)
+                return false;
+            p1 = p2;
+        }
+        return true;
+    }
+
+    private boolean isRow(ArrayList<Pair<Integer, Integer>> cells) {
+        Pair<Integer, Integer> p1, p2;
+        p1 = cells.get(0);
+        for (int i = 1; i < cells.size(); i++) {
+            p2 = cells.get(i);
+            if (Math.abs(p1.first() - p2.first()) != 0 || Math.abs(p1.second() - p2.second()) != 1)
+                return false;
+            p1 = p2;
+        }
+        return true;
+    }
+
+    private boolean isColumn(ArrayList<Pair<Integer, Integer>> cells) {
+        Pair<Integer, Integer> p1, p2;
+        p1 = cells.get(0);
+        for (int i = 1; i < cells.size(); i++) {
+            p2 = cells.get(i);
+            if (Math.abs(p1.first() - p2.first()) != 1 || Math.abs(p1.second() - p2.second()) != 0)
+                return false;
+            p1 = p2;
+        }
+        return true;
+    }
+
+    public boolean checkSelection(ArrayList<Integer> indexes, int color) {
+        Pair<Integer, Integer> p;
+        int currentColor;
+
+        if (indexes.size() < 1 || indexes.size() > 3) return false;
+
+        for (Integer index : indexes) {
+            if (index < 1 || index > 61)
+                return false;
+
+            if (getField(index) == null)
+                return false;
+        }
+
+        for (Integer index : indexes) {
+            currentColor = getField(index).getColor();
+            if ((players < 4 && currentColor != color) || (players == 4 && currentColor != color
+                    && currentColor != Marble.getTeammateColor(color))) {
+                return false;
+            }
+        }
+
+        Collections.sort(indexes);
+        ArrayList<Pair<Integer, Integer>> cells = new ArrayList<>();
+        for (Integer index : indexes) {
+            cells.add(getCell(index));
+        }
+
+        return isColumn(cells) || isRow(cells) || isDiagonal(cells);
+    }
+
+    public Marble getField(int index) {
+        Pair<Integer, Integer> p = INDEXCELL.get(index);
+        return board[p.first()][p.second()];
+    }
+
+    public Pair<Integer, Integer> getCell(int index) {
+        return INDEXCELL.get(index);
     }
 
     @Override
