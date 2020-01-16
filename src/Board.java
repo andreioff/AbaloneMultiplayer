@@ -1,4 +1,5 @@
 import Marble.Marble;
+
 import java.util.HashMap;
 
 public class Board {
@@ -129,16 +130,26 @@ public class Board {
         put(61, new Pair<Integer, Integer>(8, 4));
     }};
     private static final int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}};
+    private static final String indexesBoard =
+            "          01  02  03  04  05;" +
+                    "        06  07  08  09  10  11;" +
+                    "      12  13  14  15  16  17  18;" +
+                    "    19  20  21  22  23  24  25  26;" +
+                    "  27  28  29  30  31  32  33  34  35;" +
+                    "    36  37  38  39  40  41  42  43;" +
+                    "      44  45  46  47  48  49  50;" +
+                    "        51  52  53  54  55  56;" +
+                    "          57  58  59  60  61";
 
     private int[] score;
     private Marble[][] board;
     int players;
 
     public Board(int players) {
-        this.players = players;
-        score = new int[players];
+        this.players = (players > 2 && players <= 4) ? players : 2;
+        score = new int[this.players];
         board = new Marble[9][9];
-        setup(players);
+        setup(this.players);
     }
 
     public void setup2() {
@@ -162,15 +173,51 @@ public class Board {
     }
 
     public void setup3() {
+        int marbels = 6;
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < marbels; j++)
+                board[j][i] = new Marble(1);
+            marbels--;
+        }
 
+        marbels = 5;
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < marbels; j++)
+                board[8 - i][j] = new Marble(2);
+            marbels++;
+        }
+
+        marbels = 5;
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < marbels; j++) {
+                board[j][3 + j + i] = new Marble(3);
+            }
+        }
+        board[5][7] = new Marble(3);
     }
 
     public void setup4() {
+        for (int i = 4; i >= 2; i--) {
+            for (int j = 0; j < i; j++) {
+                board[4 - i][j + 4 - i] = new Marble(1);
+            }
 
+            for (int j = 0; j < i; j++) {
+                board[5 + j - i][5 + j] = new Marble(2);
+            }
+
+            for (int j = 0; j < i; j++) {
+                board[4 + i][5 + j - i] = new Marble(3);
+            }
+
+            for (int j = 0; j < i; j++) {
+                board[4 + j][4 - i] = new Marble(4);
+            }
+        }
     }
 
     public void setup(int players) {
-        switch(players) {
+        switch (players) {
             case 2:
                 setup2();
                 break;
@@ -187,11 +234,34 @@ public class Board {
 
     @Override
     public String toString() {
-        return "";
+        StringBuilder str = new StringBuilder();
+        int tab = 10;
+        int marbelsPerRow = 5;
+        String[] splittedIndexesBoard = indexesBoard.split(";");
+
+        for (int i = 0; i < 9; i++) {
+            StringBuilder row = new StringBuilder();
+            row.append(String.format("%" + tab + "s", ""));
+            for (int j = 0; j < marbelsPerRow; j++) {
+                row.append(board[i][j] != null ? " " + board[i][j].getColor() + "  " : " .  ");
+            }
+            row.append(String.format("%" + tab + "s", ""));
+            row.append(splittedIndexesBoard[i]);
+            row.append(System.lineSeparator());
+            str.append(row);
+            if (i < 4) {
+                tab -= 2;
+                marbelsPerRow++;
+            } else {
+                tab += 2;
+                marbelsPerRow--;
+            }
+        }
+        return str.toString();
     }
 
-    public static void main (String[] args) {
-        Board board = new Board(2);
+    public static void main(String[] args) {
+        Board board = new Board(4);
         System.out.println(board.toString());
     }
 }
