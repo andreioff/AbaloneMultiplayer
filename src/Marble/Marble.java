@@ -1,7 +1,7 @@
 package Marble;
 
 public class Marble {
-
+	public static final String[] colors = {"Red", "White", "Blue", "Black"};
 	private int mColor;
 
 	public Marble(int color) {
@@ -14,8 +14,12 @@ public class Marble {
 
 	}
 
-	 public int getColor() {
+	 public int getColorNr() {
 			 return mColor;
+	 }
+
+	 public String getColor() {
+		return colors[mColor];
 	 }
 
 	 public static int getTeammateColor(int color) {
@@ -29,7 +33,7 @@ public class Marble {
 	 }
 
 	 public String toString() {
-	 	return Integer.toString(mColor);
+	 	return colors[mColor];
 	 }
 }
 	 
