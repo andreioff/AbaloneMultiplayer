@@ -21,11 +21,6 @@ public class GameTest {
 
     }
 
-    @Test
-    public void playTest() {
-
-
-    }
 
     @Test
     public void printOutcomeTest() {

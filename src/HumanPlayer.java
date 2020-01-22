@@ -36,11 +36,14 @@ public class HumanPlayer extends Player {
             System.out.println("Wrong input format or nr of marbles specified are out of bounds.");
             choice = TextIO.getlnString();
 
-            String dir = "> " + getName() + " (" + getColorString() + ")"
-                    + ", please choose a direction: ";
-            int dirChoice = TextIO.getInt();
-            moveList.add(dirChoice);
+        }
 
+        String dir = "> " + getName() + " (" + getColorString() + ")"
+                + ", please choose a direction: ";
+        int dirChoice = TextIO.getInt();
+
+        while (!(dirChoice >= 0 && dirChoice <=5)) {
+            moveList.add(dirChoice);
         }
         return moveList;
 

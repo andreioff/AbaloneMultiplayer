@@ -2,14 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="06ca6a79-2409-4054-a9c2-f58ea0ae9239" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/AbaloneMultiplayer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AbaloneMultiplayer.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/Board$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/Board$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/Board$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/Board$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/Board.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/Board.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GameTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/HumanPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/HumanPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Player.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -171,10 +168,10 @@
       <screen x="0" y="27" width="1366" height="691" />
     </state>
     <state x="455" y="152" width="446" height="447" key="chooseDestDirectoryDialog/0.27.1366.691@0.27.1366.691" timestamp="1579084979538" />
-    <state x="379" y="206" key="com.intellij.ide.util.TipDialog" timestamp="1579610313297">
+    <state x="379" y="206" key="com.intellij.ide.util.TipDialog" timestamp="1579724805558">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="379" y="206" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1579610313297" />
+    <state x="379" y="206" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1579724805558" />
     <state x="337" y="200" key="com.intellij.ide.util.TipDialog/0.27.1366.691@0.27.1366.691" timestamp="1579178673746" />
     <state x="394" y="285" width="636" height="243" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1579622339459">
       <screen x="0" y="0" width="1536" height="824" />

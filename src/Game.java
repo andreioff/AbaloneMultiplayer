@@ -1,9 +1,5 @@
-import java.util.Scanner;
-
-import Marble.Marble;
-import org.junit.jupiter.api.Test;
-
-import static Marble.Marble.colors;
+import utils.TextIO;
+import Marble.*;
 import static Marble.Marble.getTeammateColor;
 
 
@@ -26,7 +22,14 @@ public class Game {
         players = new Player[nrPlayers];
 
         for (int i = 0; i <= nrPlayers; i++) {
-            players[i] = new HumanPlayer(name.getName(), i+1 );
+            String input = TextIO.getlnString();
+            if(input.equals("-H")){
+                players[i] = new HumanPlayer(name.getName(), i+1 );
+            }
+            else if (input.equals("-C")) {
+                players[i] = new ComputerPlayer(name.getName(), i+1 );
+            }
+
         }
     }
     /**
@@ -35,29 +38,15 @@ public class Game {
      **/
 
     public void start() {
-
-        Scanner sc = new Scanner(System.in);
         boolean continueGame = true;
         while (continueGame) {
-            reset();
+            board.reset();
             play();
             System.out.println("Do you want a rematch?(y/n)");
-            continueGame = sc.hasNextBoolean() ;
+            continueGame = TextIO.getBoolean() ;
         }
-
-
-
-
     }
-    /**
-    @requires current != 0
-    @ensures current = 0;
-    Resets the game.
-     **/
-    public void reset() {
-        current = 0;
-        board.setup(nrPlayers);
-    }
+
 
     /**
      * Displays current state of the game.
@@ -77,7 +66,7 @@ public class Game {
         while (!gameOver()) {
             while (current <= nrPlayers) {
                 players[current].makeMove(board);
-                incTurns();
+                turns++;
                 current++;
                 update();
             }
@@ -98,7 +87,7 @@ public class Game {
         int index = 0;
         int i;
         boolean wasEqual =  false;
-        for (i = 0; i <= nrPlayers; i++) {
+        for (i = 0; i <nrPlayers; i++) {
             if (max == score[i]) {
                 wasEqual = true;
             }
@@ -107,36 +96,16 @@ public class Game {
                 max = score[i];
                 index = i;
             }
-            if (wasEqual && index == 0)
-                System.out.println("The game ended in a draw.");
 
-            if (nrPlayers < 4) {
-                System.out.println(Marble.colors[index]);
-            } else if (nrPlayers == 4) {
-                System.out.println(Marble.colors[index] + "&&" + Marble.colors[getTeammateColor(index)]);
-            }
         }
+        if (wasEqual && index == 0)
+            System.out.println("The game ended in a draw.");
 
-
-    }
-    /**
-     * @requires turns = 0;
-     * @ensures turns != 0
-     * Increments the number of turns
-
-     */
-    public void incTurns(){
-        turns++;
-
-    }
-
-    /**
-     * @requires turns != 0
-     * @return the number of turns
-     */
-    public int getTurns() {
-            return turns;
-
+        if (nrPlayers < 4) {
+            System.out.println(Marble.colors[index]);
+        } else if (nrPlayers == 4) {
+            System.out.println(Marble.colors[index] + "&&" + Marble.colors[getTeammateColor(index)]);
+        }
     }
 
     /**
@@ -144,7 +113,7 @@ public class Game {
      * @return true if the game is over, false otherwise.
      */
     public boolean gameOver() {
-        return (board.hasWinner() || getTurns() == 96);
+        return (board.hasWinner() || turns == 96);
 
     }
 }

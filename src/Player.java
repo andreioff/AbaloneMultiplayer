@@ -48,10 +48,8 @@ public  abstract class Player {
      */
     public void makeMove(Board board) {
         List<Integer> playerMove = determineMove(board);
-        int color = playerMove.get(1);
         int direction = playerMove.get(0);
         playerMove.remove(0);
-        playerMove.remove(1);
         board.move(direction, playerMove, color);
 
 
