@@ -1,3 +1,5 @@
+package abalone;
+
 import java.util.Comparator;
 
 public class CompareByDirection implements Comparator<Pair> {

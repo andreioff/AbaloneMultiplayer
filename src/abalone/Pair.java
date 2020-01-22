@@ -1,3 +1,5 @@
+package abalone;
+
 public class Pair {
     private final Integer k;
     private final Integer v;
@@ -38,6 +40,6 @@ public class Pair {
 
     @Override
     public String toString() {
-        return "(" + k + ", " + v + ")\n";
+        return "(" + k + ", " + v + ")";
     }
 }
