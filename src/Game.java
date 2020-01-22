@@ -1,6 +1,7 @@
 import java.util.Scanner;
 
 import Marble.Marble;
+import org.junit.jupiter.api.Test;
 
 import static Marble.Marble.colors;
 import static Marble.Marble.getTeammateColor;
@@ -9,6 +10,7 @@ import static Marble.Marble.getTeammateColor;
 public class Game {
     private Player name;
 
+    private int turns;
 
     private Board board;
 
@@ -16,7 +18,7 @@ public class Game {
 
     private int nrPlayers;
 
-    private int current;
+    public int current;
 
     public Game(int nrPlayers) {
         board = new Board(nrPlayers);
@@ -28,6 +30,7 @@ public class Game {
         }
     }
     /**
+     * @requires nrPlayers > 0
     Starts the game.
      **/
 
@@ -41,6 +44,9 @@ public class Game {
             System.out.println("Do you want a rematch?(y/n)");
             continueGame = sc.hasNextBoolean() ;
         }
+
+
+
 
     }
     /**
@@ -56,7 +62,7 @@ public class Game {
     /**
      * Displays current state of the game.
      */
-    private void update() {
+    public void update() {
         System.out.println("\nThis is the current game situation: \n\n" + board.toString()
                 + "\n");
     }
@@ -65,23 +71,28 @@ public class Game {
      *  Plays the game.
      */
 
-    private void play() {
+    public void play() {
+         turns = 0;
         update();
-        while (!board.isWinner(color)) {
+        while (!gameOver()) {
             while (current <= nrPlayers) {
                 players[current].makeMove(board);
+                incTurns();
                 current++;
                 update();
             }
             current = 0;
+
+
         }
         printOutcome();
     }
 
     /**
+     * @requires score != null
      * Prints the result of the game.
      */
-    private void printOutcome() {
+    public void printOutcome() {
         int[] score = board.getScore();
         int max = score[0];
         int index = 0;
@@ -108,8 +119,32 @@ public class Game {
 
 
     }
+    /**
+     * @requires turns = 0;
+     * @ensures turns != 0
+     * Increments the number of turns
+
+     */
+    public void incTurns(){
+        turns++;
+
+    }
+
+    /**
+     * @requires turns != 0
+     * @return the number of turns
+     */
+    public int getTurns() {
+            return turns;
+
+    }
+
+    /**
+     *
+     * @return true if the game is over, false otherwise.
+     */
     public boolean gameOver() {
-        return (board.hasWinner() || turns == 96);
+        return (board.hasWinner() || getTurns() == 96);
 
     }
 }

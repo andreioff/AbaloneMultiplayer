@@ -1,4 +1,7 @@
+import java.util.ArrayList;
 import java.util.List;
+
+import org.w3c.dom.DOMStringList;
 import utils.TextIO;
 public class HumanPlayer extends Player {
 
@@ -18,6 +21,9 @@ public class HumanPlayer extends Player {
 
     @Override
     public List<Integer> determineMove(Board board) {
+
+        List<Integer> moveList = new ArrayList<>();
+
         String prompt = "> " + getName() + " (" + getColorString() + ")"
                 + ", what is your choice? Make sure a list of indexes delimited by spaces";
 
@@ -29,10 +35,14 @@ public class HumanPlayer extends Player {
         while(!(choice.matches(pattern)) || !(splitted.length >= 1 && splitted.length <= 3)) {
             System.out.println("Wrong input format or nr of marbles specified are out of bounds.");
             choice = TextIO.getlnString();
+
+            String dir = "> " + getName() + " (" + getColorString() + ")"
+                    + ", please choose a direction: ";
+            int dirChoice = TextIO.getInt();
+            moveList.add(dirChoice);
+
         }
-
-
-
+        return moveList;
 
     }
 }
