@@ -1,17 +1,16 @@
-package Marble;
+package abalone.Marble;
 
 public class Marble {
-	public static final String[] colors = {"Red", "White", "Blue", "Black"};
+	public static final String[] colors = {"White", "Black", "Blue", "Red"};
 	private int mColor;
 
 	public Marble(int color) {
-		//1 - Red; 2 - White; 3 - Blue; 4 - Black;
+		//1 - White; 2 - Black; 3 - Blue; 4 - Red;
 		if (color > 1 && color <= 4) {
 			mColor = color;
 		} else {
 			mColor = 1;
 		}
-
 	}
 
 	 public int getColorNr() {
@@ -23,12 +22,12 @@ public class Marble {
 	 }
 
 	 public static int getTeammateColor(int color) {
-		switch (color) {
+		switch(color) {
 			case 1: return 3;
 			case 2: return 4;
 			case 3: return 1;
 			case 4: return 2;
-			default: return color;
+			default: return 0;
 		}
 	 }
 
@@ -37,7 +36,7 @@ public class Marble {
 	 }
 }
 	 
-	 
+
 	 
 	
 		
