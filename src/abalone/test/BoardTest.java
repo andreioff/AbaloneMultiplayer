@@ -12,10 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import abalone.Board;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class BoardTest {
     private Board board;
@@ -23,6 +20,37 @@ public class BoardTest {
     @BeforeEach
     public void setUp() {
         board = new Board();
+    }
+
+    @Test
+    public void testSetupHashesAndGetHashes() {
+        Map<Integer, Pair> INDEXCELL = board.getINDEXCELL();
+        Map<Pair, Integer> CELLINDEX = board.getCELLINDEX();
+
+        assertTrue(INDEXCELL.containsKey(0));
+        assertTrue(INDEXCELL.containsKey(60));
+        assertFalse(INDEXCELL.containsKey(-1));
+        assertFalse(INDEXCELL.containsKey(61));
+
+        assertTrue(CELLINDEX.containsValue(0));
+        assertTrue(CELLINDEX.containsValue(60));
+        assertFalse(CELLINDEX.containsValue(-1));
+        assertFalse(CELLINDEX.containsValue(61));
+
+        assertEquals(new Pair(0, 4), INDEXCELL.get(0));
+        assertEquals(new Pair(8, 4), INDEXCELL.get(60));
+        assertEquals(0, CELLINDEX.get(new Pair(0, 4)));
+        assertEquals(60, CELLINDEX.get(new Pair(8, 4)));
+    }
+
+    @Test
+    public void testReset() {
+        board.setup(4);
+        board.setField(30, new Marble(4));
+        assertEquals(4, board.getField(30).getColorNr());
+
+        board.reset();
+        assertNull(board.getField(30));
     }
 
     @Test
@@ -259,6 +287,23 @@ public class BoardTest {
         }
     }
 
+    @Test
+    public void testMoveMarblesSumito() {
+        board.setup(2);
+        int[] indexes = {42, 41, 40};
+        List<Pair> cells = new ArrayList<>();
+
+        for (int index : indexes) {
+            board.setField(index, new Marble(1));
+            cells.add(board.getCell(index));
+        }
+        board.moveMarbles(1, cells, 1);
+
+        assertEquals(1, board.getField(41).getColorNr());
+        assertEquals(1, board.getField(42).getColorNr());
+        assertNull(board.getField(40));
+        assertEquals(1, board.getScore()[0]);
+    }
 
     @Test
     public void testSetup2() {
@@ -398,5 +443,230 @@ public class BoardTest {
         }
     }
     
+    @Test
+    public void testCheckSumito() {
+        int[][] selections = {
+                {3, 2},
+                {8, 7},
+                {15, 14, 13},
+                {24},
+                {32, 31, 30},
+                {39, 38},
+                {47, 46}
+        };
 
+        int[] indexes = {4, 9, 16, 25, 33, 34, 40, 41, 48, 49};
+        int[] colors = {2, 2, 2, 2, 2, 3, 2, 1, 2, 3};
+        boolean[] results = {true, true, true, false, true, false, false};
+
+        List<Pair> cells = new ArrayList<>();
+        for (int[] selection : selections) {
+            for (int index : selection) {
+                board.setField(index, new Marble(1));
+            }
+        }
+
+        for (int i = 0; i < indexes.length; i++) {
+            board.setField(indexes[i], new Marble(colors[i]));
+        }
+
+        for (int i = 0; i < 7; i++) {
+            cells.clear();
+            for (int index : selections[i]) {
+                cells.add(board.getCell(index));
+            }
+            assertEquals(results[i], board.checkSumito(1, cells, 1));
+        }
+    }
+
+    @Test
+    public void testCheckSumito4Players() {
+        board.setup(4);
+        for (int i = 0; i < 61; i++)
+            board.setField(i, null);
+
+        int[] indexes = {2, 3, 4, 7, 8, 9, 13, 14, 15, 16, 23, 24, 25, 26, 27, 30, 31, 32, 33, 38, 39, 40, 41};
+        int[] colors = {1, 3, 2, 3, 1, 2, 1, 1, 3, 2, 1, 3, 1, 2, 4, 1, 3, 2, 1, 3, 1, 2, 4};
+
+        for (int i = 0; i < indexes.length; i++) {
+            board.setField(indexes[i], new Marble(colors[i]));
+        }
+
+        int[][] selections = {
+                {3, 2},
+                {8, 7},
+                {15, 14, 13},
+                {25, 24, 23},
+                {31, 30},
+                {39, 38}
+        };
+        boolean[] results = {true, true, true, true, false, false};
+
+        List<Pair> cells = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            cells.clear();
+            for (int index : selections[i]) {
+                cells.add(board.getCell(index));
+            }
+            assertEquals(results[i], board.checkSumito(1, cells, 1));
+        }
+    }
+
+    @Test
+    public void testCheckMove() {
+        int[][] selections = {
+                {2, 1},
+                {7, 6, 5},
+                {24, 23},
+                {32, 31},
+                {40, 39, 38},
+                {46, 52, 57}
+        };
+        boolean[] results = {false, false, true, false, true, false};
+
+        for (int[] selection : selections) {
+            for (int index : selection) {
+                board.setField(board.getCell(index), new Marble(1));
+            }
+        }
+
+        int[] indexes = {3, 8, 9, 10, 25, 33, 34, 41, 42, 47};
+        int[] colors = {1, 2, 3, 3, 2, 3, 2, 2, 2, 2};
+
+        for (int i = 0; i < indexes.length; i++) {
+            board.setField(indexes[i], new Marble(colors[i]));
+        }
+
+        List<Pair> cells = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            cells.clear();
+            for (int index : selections[i]){
+                cells.add(board.getCell(index));
+            }
+            assertEquals(results[i], board.checkMove(1, cells, 1));
+        }
+    }
+
+    @Test
+    public void testCheckMove4Players() {
+        board.setup(4);
+        for (int i = 0; i < 61; i++) {
+            board.setField(i,null);
+        }
+
+        int[][] selections = {
+                {2, 1},
+                {7, 6, 5},
+                {24, 23, 22},
+                {32, 31, 30},
+                {38, 45, 51},
+                {40, 47, 53}
+        };
+
+        int[] indexes = {1, 2, 3, 5, 6, 7, 22, 23, 24, 30, 31, 32, 33, 34, 38, 45, 51, 40, 47, 53, 54};
+        int[] colors = {1, 1, 3, 1, 3, 3, 3, 3, 1, 1, 3, 1, 1, 4, 1, 3, 1, 3, 3, 1, 1};
+        boolean[] results = {false, true, false, false, true, false};
+
+        for (int i = 0; i < indexes.length; i++) {
+            board.setField(indexes[i], new Marble(colors[i]));
+        }
+
+        List<Pair> cells = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            cells.clear();
+            for (int index : selections[i]) {
+                cells.add(board.getCell(index));
+            }
+            assertEquals(results[i], board.checkMove(1, cells, 1));
+        }
+    }
+
+    @Test
+    public void testMove() {
+        board.setup(2);
+        int[][] selections = {
+                {20, 12, 29},
+                {41, 40},
+                {25, 34},
+                {25, 34}
+        };
+        int[] directions = {3, 1, 2, 3};
+
+        for (int i = 0; i < selections.length - 1; i++) {
+            for (int index : selections[i]) {
+                board.setField(index, new Marble(2));
+            }
+        }
+        board.setField(42, new Marble(1));
+
+        List<Integer> cells = new ArrayList<>();
+        for (int i = 0; i < selections.length; i++) {
+            cells.clear();
+            for (int index : selections[i]) {
+                cells.add(index);
+            }
+            board.move(directions[i], cells, 2);
+        }
+
+        int[] currentPositions = {19, 28, 37};
+        for (int i = 0; i < selections[0].length; i++) {
+            assertNull(board.getField(selections[0][i]));
+            assertEquals(2, board.getField(currentPositions[i]).getColorNr());
+        }
+
+        assertNull(board.getField(40));
+        assertEquals(2, board.getField(41).getColorNr());
+        assertEquals(2, board.getField(42).getColorNr());
+        assertEquals(1, board.getScore()[1]);
+
+        assertEquals(2, board.getField(25).getColorNr());
+        assertEquals(2, board.getField(34).getColorNr());
+    }
+
+    @Test
+    public void testMove4Players() {
+        board.setup(4);
+        for (int i = 11; i <= 42; i++) {
+            board.setField(i, null);
+        }
+
+        int[][] selections = {
+                {20, 12, 29},
+                {41, 40},
+                {25, 34},
+                {25, 34}
+        };
+        int[] directions = {3, 1, 2, 3};
+        int[] indexes = {20, 12, 29, 41, 40, 25, 34, 42};
+        int[] colors = {4, 2, 2, 4, 2, 4, 2, 3};
+
+        for (int i = 0; i < indexes.length; i++) {
+            board.setField(indexes[i], new Marble(colors[i]));
+        }
+
+        List<Integer> cells = new ArrayList<>();
+        for (int i = 0; i < selections.length; i++) {
+            cells.clear();
+            for (int index : selections[i]) {
+                cells.add(index);
+            }
+            board.move(directions[i], cells, 2);
+        }
+
+        int[] currentPositions = {19, 28, 37};
+        int[] orderedColors = {2, 4, 2};
+        for (int i = 0; i < selections[0].length; i++) {
+            assertNull(board.getField(selections[0][i]));
+            assertEquals(orderedColors[i], board.getField(currentPositions[i]).getColorNr());
+        }
+
+        assertNull(board.getField(40));
+        assertEquals(2, board.getField(41).getColorNr());
+        assertEquals(4, board.getField(42).getColorNr());
+        assertEquals(1, board.getScore()[1]);
+        assertEquals(1, board.getScore()[3]);
+
+        assertEquals(4, board.getField(25).getColorNr());
+        assertEquals(2, board.getField(34).getColorNr());
+    }
 }

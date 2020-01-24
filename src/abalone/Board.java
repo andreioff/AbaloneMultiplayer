@@ -5,8 +5,8 @@ import abalone.Marble.Marble;
 import java.util.*;
 
 public class Board {
-    protected Map<Pair, Integer> CELLINDEX;
-    protected Map<Integer, Pair> INDEXCELL;
+    private Map<Pair, Integer> CELLINDEX;
+    private Map<Integer, Pair> INDEXCELL;
     private static final Pair[] directions = {
                     new Pair(-1, 1), new Pair(0, 1), new Pair(1, 0),
                     new Pair(1, -1), new Pair(0, -1), new Pair(-1, 0)
@@ -354,6 +354,14 @@ public class Board {
         return getField(index) == null;
     }
 
+    public Map<Integer, Pair> getINDEXCELL() {
+        return INDEXCELL;
+    }
+
+    public Map<Pair, Integer> getCELLINDEX() {
+        return CELLINDEX;
+    }
+
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
@@ -386,7 +394,7 @@ public class Board {
 
     public static void main(String[] args) {
         Board board = new Board();
-        board.setup(4);
+        board.setup(2);
         System.out.println(board.toString());
 
     }
