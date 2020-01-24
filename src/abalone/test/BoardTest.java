@@ -442,7 +442,7 @@ public class BoardTest {
             assertFalse(board.checkInLineMove4Players(directions[i + 3], cells, 1));
         }
     }
-
+    
     @Test
     public void testCheckSumito() {
         int[][] selections = {
