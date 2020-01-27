@@ -1,31 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="AbaloneMultiplayer:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="06ca6a79-2409-4054-a9c2-f58ea0ae9239" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/abalone/test/BoardTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/AbaloneMultiplayer_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/abalone/Client/HumanPlayer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/abalone/Client/Player.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/abalone/Exceptions/ClientDisconnected.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/abalone/Protocol/ClientProtocol.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/abalone/Protocol/ProtocolMessages.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/abalone/Protocol/ServerProtocol.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/abalone/Server/GameClientHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/abalone/Server/GameHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/abalone/Server/GameServer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/abalone/Server/GameServerTUI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/abalone/Server/GameServerView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/Board$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/Board$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/Board.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/CompareByDirection.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/Game.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/GameTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/HumanPlayer.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/META-INF/AbaloneMultiplayer.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/Marble/Marble.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/Pair.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/Player.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/utils/TextIO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Board.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CompareByDirection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/CompareByDirection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GameTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/HumanPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/HumanPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Marble/Marble.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pair.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Pair.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/abalone/Marble/Marble.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Marble/Marble.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/abalone/Board.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/abalone/CompareByDirection.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/abalone/Marble/Marble.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/abalone/Pair.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/abalone/test/BoardTest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Game.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GameTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/HumanPlayer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Player.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/abalone/Board.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/abalone/CompareByDirection.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/abalone/Marble/Marble.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Game/Marble.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/abalone/Pair.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/abalone/test/BoardTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/abalone/test/CompareByDirectionTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/abalone/test/PairTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/TextIO.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,16 +71,65 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_directory_selection" value="$PROJECT_DIR$" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/.idea/checkstyle-ss-2019.xml" />
-    <property name="project.structure.last.edited" value="Project" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/abalone/Client" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.11820328" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="org.infernus.idea.checkstyle.CheckStyleConfigurable" />
   </component>
-  <component name="RunManager" selected="JUnit.GameTest">
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="abalone.Server" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/abalone/Client" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.GameServer">
+    <configuration name="Board" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="abalone.Game.Board" />
+      <module name="AbaloneMultiplayer" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="abalone.Game.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Game" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Game" />
       <module name="AbaloneMultiplayer" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GameServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="abalone.Server.GameServer" />
+      <module name="AbaloneMultiplayer" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="abalone.Server.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GameTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="AbaloneMultiplayer" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="abalone.Test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="abalone.Test" />
+      <option name="MAIN_CLASS_NAME" value="abalone.Test.GameTest" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -82,43 +143,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GameTest.printOutcomeTest2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="AbaloneMultiplayer" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="GameTest" />
-      <option name="METHOD_NAME" value="printOutcomeTest2" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="GameTest.printOutcomeTest3" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="AbaloneMultiplayer" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="GameTest" />
-      <option name="METHOD_NAME" value="printOutcomeTest3" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="GameTest.printOutcomeTest4" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="AbaloneMultiplayer" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="GameTest" />
-      <option name="METHOD_NAME" value="printOutcomeTest4" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.GameServer" />
+        <item itemvalue="Application.Board" />
+        <item itemvalue="JUnit.GameTest (1)" />
         <item itemvalue="JUnit.GameTest" />
         <item itemvalue="Application.Game" />
-        <item itemvalue="JUnit.GameTest.printOutcomeTest4" />
-        <item itemvalue="JUnit.GameTest.printOutcomeTest2" />
-        <item itemvalue="JUnit.GameTest.printOutcomeTest3" />
       </list>
     </recent_temporary>
   </component>
@@ -152,12 +183,12 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="361" y="72" width="814" height="728" key="#Intentions/0.0.1536.824@0.0.1536.824" timestamp="1579643545355" />
-    <state x="313" y="8" width="822" height="684" key="#Project_Structure" timestamp="1579789398591">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="362" y="213" width="1041" height="684" key="#Project_Structure" timestamp="1580040374059">
+      <screen x="0" y="27" width="1680" height="973" />
     </state>
     <state x="313" y="8" key="#Project_Structure/0.0.1536.824@0.0.1536.824" timestamp="1579789398591" />
     <state x="278" y="34" width="822" height="684" key="#Project_Structure/0.27.1366.691@0.27.1366.691" timestamp="1579087429791" />
-    <state x="342" y="36" key="#Project_Structure/0.27.1680.973@0.27.1680.973" timestamp="1579449873773" />
+    <state x="362" y="213" width="1041" height="684" key="#Project_Structure/0.27.1680.973@0.27.1680.973" timestamp="1580040374059" />
     <state x="173" y="31" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1579451899784">
       <screen x="0" y="27" width="1680" height="973" />
     </state>
@@ -167,6 +198,10 @@
       <screen x="0" y="27" width="1366" height="691" />
     </state>
     <state x="407" y="72" width="541" height="608" key="#com.intellij.ide.util.MemberChooser/0.27.1366.691@0.27.1366.691" timestamp="1579098300929" />
+    <state x="590" y="168" width="525" height="435" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1580040368184">
+      <screen x="0" y="27" width="1680" height="973" />
+    </state>
+    <state x="590" y="168" width="525" height="435" key="#com.intellij.ide.util.TreeClassChooserDialog/0.27.1680.973@0.27.1680.973" timestamp="1580040368184" />
     <state x="527" y="264" width="302" height="223" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1579086584913">
       <screen x="0" y="27" width="1366" height="691" />
     </state>
@@ -185,50 +220,54 @@
     <state x="524" y="123" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1579791103215" />
     <state x="466" y="130" width="424" height="491" key="FileChooserDialogImpl/0.27.1366.691@0.27.1366.691" timestamp="1579098529640" />
     <state x="573" y="172" key="FileChooserDialogImpl/0.27.1680.973@0.27.1680.973" timestamp="1579247023907" />
-    <state width="1493" height="182" key="GridCell.Tab.0.bottom" timestamp="1579799290429">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1634" height="402" key="GridCell.Tab.0.bottom" timestamp="1580069097022">
+      <screen x="0" y="27" width="1680" height="973" />
     </state>
     <state width="1493" height="182" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1579799290429" />
     <state width="1320" height="69" key="GridCell.Tab.0.bottom/0.27.1366.691@0.27.1366.691" timestamp="1579530918991" />
-    <state width="1634" height="46" key="GridCell.Tab.0.bottom/0.27.1680.973@0.27.1680.973" timestamp="1579710773159" />
-    <state width="1493" height="182" key="GridCell.Tab.0.center" timestamp="1579799290429">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1634" height="402" key="GridCell.Tab.0.bottom/0.27.1680.973@0.27.1680.973" timestamp="1580069097022" />
+    <state width="1634" height="402" key="GridCell.Tab.0.center" timestamp="1580069097022">
+      <screen x="0" y="27" width="1680" height="973" />
     </state>
     <state width="1493" height="182" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1579799290429" />
     <state width="1320" height="69" key="GridCell.Tab.0.center/0.27.1366.691@0.27.1366.691" timestamp="1579530918990" />
-    <state width="1634" height="46" key="GridCell.Tab.0.center/0.27.1680.973@0.27.1680.973" timestamp="1579710773158" />
-    <state width="1493" height="182" key="GridCell.Tab.0.left" timestamp="1579799290429">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1634" height="402" key="GridCell.Tab.0.center/0.27.1680.973@0.27.1680.973" timestamp="1580069097022" />
+    <state width="1634" height="402" key="GridCell.Tab.0.left" timestamp="1580069097022">
+      <screen x="0" y="27" width="1680" height="973" />
     </state>
     <state width="1493" height="182" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1579799290429" />
     <state width="1320" height="69" key="GridCell.Tab.0.left/0.27.1366.691@0.27.1366.691" timestamp="1579530918990" />
-    <state width="1634" height="46" key="GridCell.Tab.0.left/0.27.1680.973@0.27.1680.973" timestamp="1579710773158" />
-    <state width="1493" height="182" key="GridCell.Tab.0.right" timestamp="1579799290429">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1634" height="402" key="GridCell.Tab.0.left/0.27.1680.973@0.27.1680.973" timestamp="1580069097022" />
+    <state width="1634" height="402" key="GridCell.Tab.0.right" timestamp="1580069097022">
+      <screen x="0" y="27" width="1680" height="973" />
     </state>
     <state width="1493" height="182" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1579799290429" />
     <state width="1320" height="69" key="GridCell.Tab.0.right/0.27.1366.691@0.27.1366.691" timestamp="1579530918990" />
-    <state width="1634" height="46" key="GridCell.Tab.0.right/0.27.1680.973@0.27.1680.973" timestamp="1579710773158" />
-    <state width="1493" height="261" key="GridCell.Tab.1.bottom" timestamp="1579785779434">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1634" height="402" key="GridCell.Tab.0.right/0.27.1680.973@0.27.1680.973" timestamp="1580069097022" />
+    <state width="1634" height="402" key="GridCell.Tab.1.bottom" timestamp="1580069097023">
+      <screen x="0" y="27" width="1680" height="973" />
     </state>
     <state width="1493" height="261" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1579785779434" />
-    <state width="1634" height="127" key="GridCell.Tab.1.bottom/0.27.1680.973@0.27.1680.973" timestamp="1579702781091" />
-    <state width="1493" height="261" key="GridCell.Tab.1.center" timestamp="1579785779434">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1634" height="402" key="GridCell.Tab.1.bottom/0.27.1680.973@0.27.1680.973" timestamp="1580069097023" />
+    <state width="1634" height="402" key="GridCell.Tab.1.center" timestamp="1580069097023">
+      <screen x="0" y="27" width="1680" height="973" />
     </state>
     <state width="1493" height="261" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1579785779434" />
-    <state width="1634" height="127" key="GridCell.Tab.1.center/0.27.1680.973@0.27.1680.973" timestamp="1579702781091" />
-    <state width="1493" height="261" key="GridCell.Tab.1.left" timestamp="1579785779434">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1634" height="402" key="GridCell.Tab.1.center/0.27.1680.973@0.27.1680.973" timestamp="1580069097023" />
+    <state width="1634" height="402" key="GridCell.Tab.1.left" timestamp="1580069097023">
+      <screen x="0" y="27" width="1680" height="973" />
     </state>
     <state width="1493" height="261" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1579785779434" />
-    <state width="1634" height="127" key="GridCell.Tab.1.left/0.27.1680.973@0.27.1680.973" timestamp="1579702781091" />
-    <state width="1493" height="261" key="GridCell.Tab.1.right" timestamp="1579785779434">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1634" height="402" key="GridCell.Tab.1.left/0.27.1680.973@0.27.1680.973" timestamp="1580069097023" />
+    <state width="1634" height="402" key="GridCell.Tab.1.right" timestamp="1580069097023">
+      <screen x="0" y="27" width="1680" height="973" />
     </state>
     <state width="1493" height="261" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1579785779434" />
-    <state width="1634" height="127" key="GridCell.Tab.1.right/0.27.1680.973@0.27.1680.973" timestamp="1579702781091" />
+    <state width="1634" height="402" key="GridCell.Tab.1.right/0.27.1680.973@0.27.1680.973" timestamp="1580069097023" />
+    <state x="530" y="154" width="609" height="725" key="RollbackChangesDialog" timestamp="1580069074954">
+      <screen x="0" y="27" width="1680" height="973" />
+    </state>
+    <state x="530" y="154" width="609" height="725" key="RollbackChangesDialog/0.27.1680.973@0.27.1680.973" timestamp="1580069074954" />
     <state x="301" y="102" width="935" height="707" key="SettingsEditor" timestamp="1579791159275">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -238,12 +277,12 @@
       <screen x="0" y="27" width="1366" height="691" />
     </state>
     <state x="455" y="152" width="446" height="447" key="chooseDestDirectoryDialog/0.27.1366.691@0.27.1366.691" timestamp="1579084979538" />
-    <state x="414" y="271" key="com.intellij.ide.util.TipDialog" timestamp="1579702819819">
+    <state x="414" y="271" key="com.intellij.ide.util.TipDialog" timestamp="1580064330242">
       <screen x="0" y="27" width="1680" height="973" />
     </state>
     <state x="379" y="206" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1579724805558" />
     <state x="337" y="200" key="com.intellij.ide.util.TipDialog/0.27.1366.691@0.27.1366.691" timestamp="1579178673746" />
-    <state x="414" y="271" key="com.intellij.ide.util.TipDialog/0.27.1680.973@0.27.1680.973" timestamp="1579702819819" />
+    <state x="414" y="271" key="com.intellij.ide.util.TipDialog/0.27.1680.973@0.27.1680.973" timestamp="1580064330242" />
     <state x="430" y="364" width="646" height="243" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1579449882576">
       <screen x="0" y="27" width="1680" height="973" />
     </state>
