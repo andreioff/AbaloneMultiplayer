@@ -1,5 +1,6 @@
 package abalone.Client;
 
+import abalone.Exceptions.ClientDisconnected;
 import abalone.Game.Board;
 import abalone.Protocol.ClientProtocol;
 import abalone.Protocol.ProtocolMessages;
@@ -19,12 +20,16 @@ public class GameClient implements ClientProtocol {
     private String name;
     private Player player;
     private Board board;
+    private boolean wantsToPlay;
+    private int gamesPlayed;
 
     /**
      * Constructs a new HotelClient. Initialises the view.
      */
     public GameClient() {
         view = new GameClientTUI(this);
+        wantsToPlay = true;
+        gamesPlayed = 0;
     }
 
     /**
@@ -40,9 +45,12 @@ public class GameClient implements ClientProtocol {
         try {
             createConnection();
             handleHello();
-            lobby();
-            playGame();
-        } catch(ExitProgram | ProtocolException | ServerUnavailableException e) {
+            while (wantsToPlay) {
+                newGame();
+                lobby();
+                playGame();
+            }
+        } catch(ExitProgram | ProtocolException | ServerUnavailableException | ClientDisconnected e) {
             view.showMessage(e.getMessage());
             closeConnection();
         }
@@ -168,6 +176,7 @@ public class GameClient implements ClientProtocol {
     public void lobby() {
         String msg;
         try {
+            view.showMessage("Welcome to the Abalone Game's Lobby. Waiting for players...");
             msg = in.readLine();
             while (msg.charAt(0) != 's') {
                 view.showMessage(msg.split(ProtocolMessages.DELIMITER)[1] + " joined the game!");
@@ -183,24 +192,9 @@ public class GameClient implements ClientProtocol {
     @Override
     public void handleHello()
             throws ServerUnavailableException, ProtocolException {
-
-        String name = view.getString("Choose a username: ");
-        while (name == null) {
-            name = view.getString("Invalid username! Try again: ");
-        }
-
-        int players = view.getInt("Please choose how many players do you want the game to have (2, 3 or 4): ");
-        while (players < 2 || players > 4) {
-            players = view.getInt("Wrong number of players. Make sure you enter a number between 2 and 4");
-        }
-
-        String playerType = view.getString("Choose the type of player:\n"
-                                            + "-C (computer player) \n-H (human player)");
-        while (!playerType.matches("(^-C$)|(^-H$)")) {
-            name = view.getString("Invalid player type! Please choose again:\n"
-                                    + "-C (computer player) \n-H (human player)");
-        }
-
+        String name = getNameFromUser();
+        int players = getNumberOfPlayers();
+        String playerType = getPlayerType();
         String nameAlreadyExist = ProtocolMessages.INVALID + ProtocolMessages.DELIMITER + "invalidname";
 
         sendMessage(ProtocolMessages.HELLO + ProtocolMessages.DELIMITER
@@ -218,10 +212,35 @@ public class GameClient implements ClientProtocol {
         if (receivedMessage.contentEquals(expectedMessage)) {
             this.name = name;
             player = new HumanPlayer(name, view);
-            view.showMessage("Welcome to the Abalone Game's Lobby. Waiting for players...");
         } else {
             throw new ProtocolException("Could not handshake with the server!");
         }
+    }
+
+    public int getNumberOfPlayers() {
+        int players = view.getInt("Please choose how many players do you want the game to have (2, 3 or 4): ");
+        while (players < 2 || players > 4) {
+            players = view.getInt("Wrong number of players. Make sure you enter a number between 2 and 4");
+        }
+        return players;
+    }
+
+    public String getPlayerType() {
+        String playerType = view.getString("Choose the type of player:\n"
+                + "-C (computer player) \n-H (human player)");
+        while (!playerType.matches("(^-C$)|(^-H$)")) {
+            name = view.getString("Invalid player type! Please choose again:\n"
+                    + "-C (computer player) \n-H (human player)");
+        }
+        return playerType;
+    }
+
+    public String getNameFromUser() {
+        String name = view.getString("Choose a username: ");
+        while (name == null) {
+            name = view.getString("Invalid username! Try again: ");
+        }
+        return name;
     }
 
     @Override
@@ -234,11 +253,17 @@ public class GameClient implements ClientProtocol {
     }
 
     @Override
-    public void newGame() {
-
+    public void newGame() throws ServerUnavailableException {
+        if (gamesPlayed > 0) {
+            int players = getNumberOfPlayers();
+            String playerType = getPlayerType();
+            player = new HumanPlayer(name, view);
+            sendMessage(ProtocolMessages.GAME + ProtocolMessages.DELIMITER + name
+                             + ProtocolMessages.DELIMITER + players);
+        }
     }
 
-    public void playGame() {
+    public void playGame() throws ClientDisconnected {
         String current;
         board = new Board();
         try {
@@ -259,13 +284,19 @@ public class GameClient implements ClientProtocol {
                     view.showMessage("Invalid move! Please try again");
                     view.start();
                 } else if (incoming.charAt(0) == ProtocolMessages.DISCONNECT) {
-                    view.showMessage("Player " + incoming.split(ProtocolMessages.DELIMITER)[1] + " has disconnected!");
+                    String disconnectedName = incoming.split(ProtocolMessages.DELIMITER)[1];
+                    if (disconnectedName.contentEquals(name)) {
+                        throw new ClientDisconnected("You have been disconnected for being afk!");
+                    }
+                    view.showMessage("Player " + disconnectedName + " has disconnected!");
                 }
             }
             String[] splittedIncoming = incoming.split(ProtocolMessages.DELIMITER);
             String result = splittedIncoming.length == 1 ? "The game has ended in a draw!"
                                                          : splittedIncoming[1] + " has won!";
             view.showMessage(result);
+            gamesPlayed++;
+            wantsToPlay = view.getBoolean("Do you want to play a new game? yes/no");
         } catch (IOException | ServerUnavailableException e) {
             view.showMessage("An error has occurred!");
             closeConnection();

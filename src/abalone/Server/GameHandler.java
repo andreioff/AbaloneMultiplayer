@@ -1,9 +1,7 @@
 package abalone.Server;
 
-import abalone.Client.GameClient;
 import abalone.Exceptions.ClientDisconnected;
 import abalone.Game.Board;
-import abalone.Game.Game;
 import abalone.Game.Marble;
 import abalone.Protocol.ProtocolMessages;
 
@@ -46,6 +44,7 @@ public class GameHandler implements Runnable {
         players = playerArr;
         nrPlayers = players.size();
         board.setup(nrPlayers);
+        setPlayersInGameStatus(true);
     }
 
     /**
@@ -89,10 +88,12 @@ public class GameHandler implements Runnable {
                 turns++;
                 current = (current + 1) % nrPlayers;
             }
+            setPlayersInGameStatus(false);
             sendMessage(getOutcome());
         } catch (ClientDisconnected e) {
             String name = e.getMessage();
             kickPlayer(name);
+            setPlayersInGameStatus(false);
             sendMessage(ProtocolMessages.DISCONNECT + ProtocolMessages.DELIMITER + name);
             sendMessage(ProtocolMessages.END + ProtocolMessages.DELIMITER);
         }
@@ -125,13 +126,18 @@ public class GameHandler implements Runnable {
         }
         if (nrPlayers == 4) {
             outcome += Marble.colors[index] + " && " + Marble.colors[getTeammateColor(index + 1) - 1];
-
         } else if (wasEqual && index == 0) {
             outcome +=  "";
         } else {
             outcome += Marble.colors[index];
         }
         return outcome;
+    }
+
+    private void setPlayersInGameStatus(boolean value) {
+        for (GameClientHandler player : players) {
+            player.setInGameStatus(value);
+        }
     }
 
     public void sendMessage(String msg) {
@@ -145,7 +151,7 @@ public class GameHandler implements Runnable {
      * @return true if the game is over, false otherwise.
      */
     public boolean gameOver() {
-        return (board.hasWinner() || turns == 96);
+        return (board.hasWinner() || turns == 4);
 
     }
 

@@ -6,6 +6,6 @@ import abalone.Exceptions.ServerUnavailableException;
 public interface ClientProtocol {
     public void handleHello() throws ServerUnavailableException, ProtocolException;
     public void sendMove(String move) throws ServerUnavailableException;
-    public void newGame();
+    public void newGame() throws ServerUnavailableException;
     public void sendExit();
 }

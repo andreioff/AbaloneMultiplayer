@@ -12,6 +12,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * GameClientHandler for the Game Server application.
@@ -30,8 +31,10 @@ public class GameClientHandler implements Runnable {
 
     private String name;
 
-    private String move = "not set";
-    private String disconnected = "not set";
+    private String move;
+    private final AtomicBoolean disconnected = new AtomicBoolean(false);
+    private final AtomicBoolean receivedMove = new AtomicBoolean(false);
+    private final AtomicBoolean inGame = new AtomicBoolean(false);
 
     /**
      * Constructs a new GameClientHandler. Opens the In- and OutputStreams.
@@ -62,13 +65,16 @@ public class GameClientHandler implements Runnable {
         String msg;
         try {
             msg = in.readLine();
-            while (msg != null && !flagIsSet(disconnected)) {
+            while (msg != null && !isDisconnected()) {
                 System.out.println("> [" + name + "] Incoming: " + msg);
                 handleCommand(msg);
                 out.flush();
                 msg = in.readLine();
             }
-            if (flagIsSet(disconnected)) sendNotification(ProtocolMessages.EXIT + ProtocolMessages.DELIMITER);
+            if (isDisconnected()) {
+                sendNotification(ProtocolMessages.DISCONNECT + ProtocolMessages.DELIMITER + name);
+                sendNotification(ProtocolMessages.EXIT + ProtocolMessages.DELIMITER);
+            }
             shutdown();
         } catch (IOException e) {
             shutdown();
@@ -111,10 +117,17 @@ public class GameClientHandler implements Runnable {
                     break;
 
                 case ProtocolMessages.MOVE:
-                    synchronized (move) { move = param + ProtocolMessages.DELIMITER + param2; };
+                    move = param + ProtocolMessages.DELIMITER + param2;
+                    receivedMove.set(true);
                     break;
 
-                case ProtocolMessages.EXIT:
+                case ProtocolMessages.GAME:
+                    if (!inGame.get()) {
+                        srv.addInQueue(this, Integer.parseInt(param2));
+                    }
+                    break;
+
+                case ProtocolMessages.DISCONNECT:
                     out.write("");
                     break;
 
@@ -152,14 +165,15 @@ public class GameClientHandler implements Runnable {
     }
 
     public void makeMove(Board board, int color) throws ClientDisconnected {
+        receivedMove.set(false);
         int seconds;
         long startTime = System.currentTimeMillis();
         long stopTime;
-        while (!flagIsSet(move)) {
+        while (!moveWasReceived()) {
             stopTime = System.currentTimeMillis();
             seconds = (int)((stopTime - startTime) / 1000);
             if (seconds > 30) {
-                synchronized (disconnected) { disconnected = "set"; };
+                disconnected.set(true);
                 throw new ClientDisconnected(name);
             }
         }
@@ -172,9 +186,8 @@ public class GameClientHandler implements Runnable {
             marbles.add(Integer.parseInt(index));
         }
 
-        synchronized (move) { move = "not set"; };
-
         if (!board.move(direction, marbles, color)) {
+            receivedMove.set(false);
             sendNotification(ProtocolMessages.INVALID + ProtocolMessages.DELIMITER + "iv");
             makeMove(board, color);
         }
@@ -206,10 +219,16 @@ public class GameClientHandler implements Runnable {
         }
     }
 
-    public boolean flagIsSet(String flag) {
-        synchronized (flag) {
-            return !flag.contentEquals("not set");
-        }
+    private boolean isDisconnected() {
+        return disconnected.get();
+    }
+
+    private boolean moveWasReceived() {
+        return receivedMove.get();
+    }
+
+    public void setInGameStatus(boolean value) {
+        inGame.set(value);
     }
 
     public String getName() {

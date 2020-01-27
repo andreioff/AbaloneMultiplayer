@@ -1,6 +1,5 @@
 package abalone.Server;
 
-import abalone.Game.Game;
 import abalone.Protocol.ProtocolMessages;
 import abalone.Protocol.ServerProtocol;
 import abalone.Exceptions.ExitProgram;
@@ -187,9 +186,9 @@ public class GameServer implements Runnable, ServerProtocol {
         return ProtocolMessages.JOIN + ProtocolMessages.DELIMITER + name;
     }
 
+    //#TODO shuffle players before creating the game
     @Override
     public void startGame(List<GameClientHandler> queue) {
-        int qSize = queue.size();
         List<GameClientHandler> players = new ArrayList<>();
         String startMsg = getStartMessage(queue);
         for (GameClientHandler client : queue) {
