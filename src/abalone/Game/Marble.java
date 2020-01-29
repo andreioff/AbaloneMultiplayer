@@ -42,6 +42,12 @@ public class Marble {
 		}
 	}
 
+	public static int getNextColor(int color, int players) {
+		color++;
+		if (color == players + 1) color = 1;
+		return color;
+	}
+
 	public String toString() {
 		return colors[mColor];
 	}

@@ -1,7 +1,5 @@
 package abalone.Game;
 
-import abalone.Game.Marble;
-
 import java.util.*;
 
 public class Board {
@@ -205,6 +203,7 @@ public class Board {
     }
 
     public boolean checkMove(int directionIndex, List<Pair> cells, int color) {
+        cells.sort(new CompareByDirection(directions[directionIndex]));
         if (!checkSelection(cells, color) || !checkInLineMove4Players(directionIndex, cells, color)) {
             return false;
         }
@@ -261,7 +260,6 @@ public class Board {
         for (Integer index : indexes) {
             cells.add(getCell(index));
         }
-        cells.sort(new CompareByDirection(directions[directionIndex]));
 
         if (checkMove(directionIndex, cells, color)) {
             moveMarbles(directionIndex, cells, color);
@@ -314,6 +312,66 @@ public class Board {
 
     public int[] getScore() {
         return score;
+    }
+
+    public Pair getDirection(int index) {
+        return directions[index];
+    }
+
+    public List<List<Integer>> getAllValidMoves(int color) {
+        List<List<Integer>> moves = new ArrayList<>();
+        List<Pair> selection = new ArrayList<>();
+        for (int i = 0; i < 61; i++) {
+            selection.add(getCell(i));
+            validMoves(selection, color, moves);
+            selection.clear();
+        }
+        return moves;
+    }
+
+    //#TODO change this implementation with something with less cloning
+    public void validMoves(List<Pair> selection, int color, List<List<Integer>> moves) {
+        int size = selection.size();
+        for (int i = 0; i < 6; i++) {
+            if (checkMove(i, selection, color)) {
+                while (selection.size() > size) {
+                    selection.remove(0);
+                }
+                List<Integer> move = new ArrayList<>();
+                for (Pair p : selection) {
+                    move.add(getIndex(p));
+                }
+                move.add(0, i);
+                if (move.size() == 4) moves.add(0, move);
+                else moves.add(move);
+            }
+            selection.sort(new CompareByDirection(new Pair(-1, -1)));
+            if (selection.size() < 3 && i >= 1 && i <= 3) {
+                Pair lastElement = selection.get(selection.size() - 1);
+                Pair futurePos = Pair.add(lastElement, directions[i]);
+                if (isField(futurePos) && !isEmptyField(futurePos) && colorMatch(futurePos, color)) {
+                    List<Pair> newSelection = new ArrayList<>();
+                    for (Pair p : selection) {
+                        newSelection.add(new Pair(p.first(), p.second()));
+                    }
+                    newSelection.add(futurePos);
+                    validMoves(newSelection, color, moves);
+                }
+            }
+        }
+    }
+
+    public Board deepCopy() {
+        Board copy = new Board();
+        copy.setup(players);
+        for (int i = 0; i < 61; i++) {
+            if (isEmptyField(i)) {
+                copy.setField(i, null);
+            } else {
+                copy.setField(i, new Marble(getField(i).getColorNr()));
+            }
+        }
+        return copy;
     }
 
     public boolean isField(int index) {
@@ -418,10 +476,14 @@ public class Board {
         Board board = new Board();
         board.setup(2);
         System.out.println(board.toString());
-        List<Integer> marbles = new ArrayList<>(Arrays.asList(50));
-        board.move(0, marbles, 2);
-        marbles = new ArrayList<>(Arrays.asList(44, 51, 57));
-        board.move(5, marbles, 2);
-        System.out.println(board.toString());
+        List<List<Integer>> list = board.getAllValidMoves(2);
+        for (List<Integer> list1 : list) {
+            System.out.print("Direction: " + list1.get(0) + "; Indexes: ");
+            list1.remove(0);
+            for (Integer i : list1) {
+                System.out.print(i + " ");
+            }
+            System.out.println();
+        }
     }
 }

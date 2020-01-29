@@ -32,6 +32,7 @@ public class GameClientHandler implements Runnable {
     private String name;
 
     private String move;
+
     private final AtomicBoolean disconnected = new AtomicBoolean(false);
     private final AtomicBoolean receivedMove = new AtomicBoolean(false);
     private final AtomicBoolean inGame = new AtomicBoolean(false);

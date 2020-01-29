@@ -68,7 +68,9 @@ public  abstract class Player {
         return Marble.colors[color - 1];
     }
 
-
+    public int getColor() {
+        return color;
+    }
 
     /**
      * Abstract method for determining the move.

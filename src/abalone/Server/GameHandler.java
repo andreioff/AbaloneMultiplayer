@@ -10,6 +10,7 @@ import java.util.List;
 import static abalone.Game.Marble.getTeammateColor;
 
 public class GameHandler implements Runnable {
+    private static final int NUMBER_OF_TURNS = 96;
     /**
      * the number of the turns.
      **/
@@ -151,8 +152,7 @@ public class GameHandler implements Runnable {
      * @return true if the game is over, false otherwise.
      */
     public boolean gameOver() {
-        return (board.hasWinner() || turns == 4);
-
+        return (board.hasWinner() || turns == NUMBER_OF_TURNS);
     }
 
     /**

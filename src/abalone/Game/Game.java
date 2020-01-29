@@ -2,7 +2,13 @@ package abalone.Game;
 
 import static abalone.Game.Marble.getTeammateColor;
 
+import abalone.Client.BackupView;
+import abalone.Client.ComputerPlayer;
+import abalone.Client.Player;
 import utils.TextIO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Game {
     /**
@@ -61,8 +67,8 @@ public class Game {
     /**
      * @return the current state of the game.
      */
-    public String update() {
-        return board.toString();
+    public void update() {
+        System.out.println(board.toString());
     }
 
     /**
@@ -73,12 +79,28 @@ public class Game {
         turns = 0;
         update();
         while (!gameOver()) {
-            players[current].makeMove(board);
+            makeMove(board, players[current], current + 1);
             turns++;
             current = (current + 1) % nrPlayers;
             update();
         }
-        printOutcome();
+        System.out.println(printOutcome());
+    }
+
+    public void makeMove(Board board, Player player, int color) {
+        System.out.println(color);
+        player.setColor(color);
+        String move = player.determineMove(board, new BackupView());
+        System.out.println(move);
+        String[] split = move.split(";");
+        int dir = Integer.parseInt(split[0]);
+        String marbles = split[1].substring(1, split[1].length() - 1);
+        List<Integer> indexes = new ArrayList<>();
+        String[] splitMarbles = marbles.split(",");
+        for (String index : splitMarbles) {
+            indexes.add(Integer.parseInt(index));
+        }
+        board.move(dir, indexes, color);
     }
 
     /**
@@ -129,6 +151,14 @@ public class Game {
      */
     public Board getBoard() {
         return board;
+    }
+
+    public static void main (String[] args) {
+        Player[] players = new Player[2];
+        players[0] = new ComputerPlayer("AI1", new BackupView(), 0, players.length);
+        players[1] = new ComputerPlayer("AI2", new BackupView(), 0, players.length);
+        Game game = new Game(players);
+        game.start();
     }
 }
 

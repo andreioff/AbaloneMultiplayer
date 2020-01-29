@@ -2,11 +2,6 @@ package abalone.Client;
 
 import abalone.Game.Board;
 import abalone.Protocol.ProtocolMessages;
-import utils.TextIO;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class HumanPlayer extends Player {
 

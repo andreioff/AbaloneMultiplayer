@@ -50,7 +50,7 @@ public class GameClient implements ClientProtocol {
                 lobby();
                 playGame();
             }
-        } catch(ExitProgram | ProtocolException | ServerUnavailableException | ClientDisconnected e) {
+        } catch (ExitProgram | ProtocolException | ServerUnavailableException | ClientDisconnected e) {
             view.showMessage(e.getMessage());
             closeConnection();
         }
@@ -85,7 +85,6 @@ public class GameClient implements ClientProtocol {
             } catch (IOException e) {
                 view.showMessage("ERROR: could not create a socket on "
                         + addr.toString() + " and port " + port + ".");
-
                 boolean response = view.getBoolean("Do you want to try again?");
                 if(!response) {
                     throw new ExitProgram("User wanted to exit.");
@@ -170,7 +169,7 @@ public class GameClient implements ClientProtocol {
             serverSock.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        } catch (NullPointerException ignored) {}
     }
 
     public void lobby() {
@@ -179,10 +178,24 @@ public class GameClient implements ClientProtocol {
             view.showMessage("Welcome to the Abalone Game's Lobby. Waiting for players...");
             msg = in.readLine();
             while (msg.charAt(0) != 's') {
-                view.showMessage(msg.split(ProtocolMessages.DELIMITER)[1] + " joined the game!");
+                if (msg.charAt(0) == 'j') {
+                    view.showMessage(msg.split(ProtocolMessages.DELIMITER)[1] + " joined the game!");
+                } else if (msg.charAt(0) == 'd') {
+                    view.showMessage(msg.split(ProtocolMessages.DELIMITER)[1] + " disconnected!");
+                }
                 msg = in.readLine();
             }
+            String[] playerNames = msg.substring(3, msg.length() - 1).split(",");
+            for (int i = 0; i < playerNames.length; i++) {
+                if (playerNames[i].contentEquals(name)) {
+                    player.setColor(i + 1);
+                    break;
+                }
+            }
+            board = new Board();
+            board.setup(playerNames.length);
             view.showMessage("The game has started!");
+            view.showMessage("You are " + player.getColorString());
         } catch (IOException e) {
             view.showMessage("An error has occured!");
             closeConnection();
@@ -211,7 +224,11 @@ public class GameClient implements ClientProtocol {
         String expectedMessage = ProtocolMessages.JOIN + ProtocolMessages.DELIMITER + name;
         if (receivedMessage.contentEquals(expectedMessage)) {
             this.name = name;
-            player = new HumanPlayer(name, view);
+            if (playerType.contentEquals("-H")) {
+                player = new HumanPlayer(name, view);
+            } else {
+                player = new ComputerPlayer(name, view, 0, players);
+            }
         } else {
             throw new ProtocolException("Could not handshake with the server!");
         }
@@ -257,7 +274,11 @@ public class GameClient implements ClientProtocol {
         if (gamesPlayed > 0) {
             int players = getNumberOfPlayers();
             String playerType = getPlayerType();
-            player = new HumanPlayer(name, view);
+            if (playerType.contentEquals("-H")) {
+                player = new HumanPlayer(name, view);
+            } else {
+                player = new ComputerPlayer(name, view, 0, players);
+            }
             sendMessage(ProtocolMessages.GAME + ProtocolMessages.DELIMITER + name
                              + ProtocolMessages.DELIMITER + players);
         }
@@ -265,7 +286,6 @@ public class GameClient implements ClientProtocol {
 
     public void playGame() throws ClientDisconnected {
         String current;
-        board = new Board();
         try {
             String incoming;
             while ((incoming = in.readLine()).charAt(0) != 'x') {

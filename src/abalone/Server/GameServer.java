@@ -134,12 +134,16 @@ public class GameServer implements Runnable, ServerProtocol {
         names.remove(client.getName());
 
         boolean result = queue2.remove(client);
+        List<GameClientHandler> queue = queue2;
         if (!result) {
             result = queue3.remove(client);
+            queue = queue3;
         }
         if (!result) {
             queue4.remove(client);
+            queue = queue4;
         }
+        notifyPlayersDisconnection(queue, client.getName());
     }
 
     public synchronized void addName(String name) {
@@ -165,17 +169,23 @@ public class GameServer implements Runnable, ServerProtocol {
                 queue = queue4;
                 break;
         }
-        notifyPlayers(client, queue);
+        notifyPlayersJoin(client, queue);
         queue.add(client);
         if (queue.size() == players) {
             startGame(queue);
         }
     }
 
-    public void notifyPlayers(GameClientHandler currentClient, List<GameClientHandler> queue) {
+    public void notifyPlayersJoin(GameClientHandler currentClient, List<GameClientHandler> queue) {
         for (GameClientHandler client : queue) {
             client.sendNotification(ProtocolMessages.JOIN + ProtocolMessages.DELIMITER + currentClient.getName());
             currentClient.sendNotification(ProtocolMessages.JOIN + ProtocolMessages.DELIMITER + client.getName());
+        }
+    }
+
+    public void notifyPlayersDisconnection(List<GameClientHandler> queue, String name) {
+        for (GameClientHandler client : queue) {
+            client.sendNotification(ProtocolMessages.DISCONNECT + ProtocolMessages.DELIMITER + name);
         }
     }
 
@@ -198,16 +208,6 @@ public class GameServer implements Runnable, ServerProtocol {
         queue.clear();
         GameHandler game = new GameHandler(players);
         (new Thread(game)).start();
-    }
-
-    @Override
-    public void makeMove() {
-
-    }
-
-    @Override
-    public void nextTurn() {
-
     }
 
     public String getStartMessage(List<GameClientHandler> queue) {
