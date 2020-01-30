@@ -34,7 +34,7 @@ public class GameServerTUI implements GameServerView {
         String input = null;
         try {
             input = in.readLine();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return input;
@@ -55,14 +55,14 @@ public class GameServerTUI implements GameServerView {
     @Override
     public boolean getBoolean(String question) {
         showMessage(question);
-        String input = null;
+        String input;
         boolean output = false;
         try {
             input = in.readLine();
             if (input.contentEquals("yes")) {
                 output = true;
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return output;

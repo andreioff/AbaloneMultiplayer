@@ -2,7 +2,7 @@ package abalone.Game;
 
 public class Marble {
 
-	public static final String[] colors = {"White", "Black", "Blue", "Red"};
+	public static final String[] colors = {"White", "Black", "Yellow", "Red"};
 
 	private int mColor;
 
@@ -11,7 +11,7 @@ public class Marble {
 	 * @param color != null
 	 **/
 	public Marble(int color) {
-		//1 - White; 2 - Black; 3 - Blue; 4 - Red;
+		//1 - White; 2 - Black; 3 - Yellow; 4 - Red;
 		if (color > 1 && color <= 4) {
 			mColor = color;
 		} else {
@@ -24,7 +24,7 @@ public class Marble {
 	}
 
 	public String getColor() {
-		return colors[mColor];
+		return colors[mColor - 1];
 	}
 
 	/**
@@ -46,9 +46,5 @@ public class Marble {
 		color++;
 		if (color == players + 1) color = 1;
 		return color;
-	}
-
-	public String toString() {
-		return colors[mColor];
 	}
 }

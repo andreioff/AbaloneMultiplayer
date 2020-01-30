@@ -1,10 +1,11 @@
-package abalone.Client;
+package abalone.Players;
 
+import abalone.Client.GameClientView;
 import abalone.Game.Board;
 import abalone.Protocol.ProtocolMessages;
 
 public class HumanPlayer extends Player {
-
+    private GameClientView view;
     /**
      * Creates a new player object.
      *
@@ -15,13 +16,14 @@ public class HumanPlayer extends Player {
      * @ensures the player's color
      */
     public HumanPlayer(String name, GameClientView view) {
-        super(name, view);
+        super(name);
+        this.view = view;
     }
 
     @Override
-    public String determineMove(Board board, GameClientView view) {
+    public String determineMove(Board board) {
 
-        String prompt = "Make sure you type a list of at most 3 indexes delimited by spaces.";
+        String prompt = "You can type now! Make sure your input is a list of, at most, 3 indexes delimited by spaces.";
         String choice = view.getString(prompt);
 
         String pattern = "^(\\d+([ ]?\\d)*)$";
@@ -31,6 +33,7 @@ public class HumanPlayer extends Player {
             splittedChoice = choice.split(" ");
         }
 
+        view.showMessage(getDirectionsLegend());
         String dir = "Please choose direction between 0 and 5: ";
         int dirChoice = view.getInt(dir);
 
@@ -46,5 +49,15 @@ public class HumanPlayer extends Player {
         }
         move.setCharAt(move.length() - 1, ']');
         return move.toString();
+    }
+
+    private String getDirectionsLegend() {
+        return "Here is the list with the possible directions:\n" +
+                "0 -> top-right\n" +
+                "1 -> right\n" +
+                "2 -> bottom-right\n" +
+                "3 -> bottom-left\n" +
+                "4 -> left\n" +
+                "5 -> top-left";
     }
 }

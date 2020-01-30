@@ -1,7 +1,5 @@
 package abalone.Client;
 
-import abalone.Protocol.ProtocolMessages;
-import abalone.Exceptions.ExitProgram;
 import abalone.Exceptions.ServerUnavailableException;
 
 import java.net.InetAddress;
@@ -21,29 +19,9 @@ public class GameClientTUI implements GameClientView {
 
     @Override
     public void start() throws ServerUnavailableException {
-        try {
-            String input;
-            input = client.getMove();
-            handleUserInput(input);
-        } catch(ExitProgram e) {
-            client.sendExit();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void handleUserInput(String input) throws ExitProgram, ServerUnavailableException {
-        switch (input.charAt(0)) {
-            case ProtocolMessages.MOVE:
-                client.sendMove(input);
-                break;
-            case ProtocolMessages.EXIT:
-                throw new ExitProgram("User exited!");
-            default:
-                showMessage("Unknown command");
-                break;
-            }
+        String input;
+        input = client.getMove();
+        client.sendMove(input);
     }
 
     @Override
@@ -81,7 +59,7 @@ public class GameClientTUI implements GameClientView {
     @Override
     public int getInt(String question) {
         showMessage(question);
-        int input = 0;
+        int input;
         try {
             input = Integer.parseInt(in.nextLine());
             if (input < 0) throw new NumberFormatException();

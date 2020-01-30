@@ -1,4 +1,4 @@
-package abalone.Client;
+package abalone.Strategies;
 
 import abalone.Game.Board;
 import abalone.Game.Marble;
@@ -7,26 +7,51 @@ import abalone.Game.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ComputerPlayer extends Player {
+public class SmartStrategy implements Strategy{
     private List<Integer> bestMove;
+    private List<Integer> globalBestMove;
     private static final int DEPTH_SEARCH = 3;
+    private int MAX_TIME;
     private int players;
+    private boolean timeout;
+    private long startTime;
+    private int color;
 
-    public ComputerPlayer(String name, GameClientView view, int color, int players) {
-        super(name, view);
-        setColor(color);
+    public SmartStrategy(int players, int seconds) {
         this.players = players;
         bestMove = new ArrayList<>();
+        globalBestMove = new ArrayList<>();
+        MAX_TIME = seconds;
     }
 
     @Override
-    public String determineMove(Board board, GameClientView view) {
-        maxi(board, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, DEPTH_SEARCH, getColor());
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    @Override
+    public String determineMove(Board board) {
+        timeout = false;
+        globalBestMove.clear();
+        bestMove.clear();
+        startTime = System.currentTimeMillis();
+        long stopTime;
+        for (int d = 0;; d++) {
+            maxi(board, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, DEPTH_SEARCH + d, color);
+            if (!timeout) {
+                globalBestMove.clear();
+                globalBestMove.addAll(bestMove);
+            }
+            stopTime = System.currentTimeMillis();
+            int timePassed = (int)(stopTime - startTime) / 1000;
+            if (timePassed >= MAX_TIME) break;
+        }
+
         StringBuilder move = new StringBuilder();
-        move.append(bestMove.get(0));
+        move.append(globalBestMove.get(0));
         move.append(";[");
-        bestMove.remove(0);
-        for (Integer i : bestMove) {
+        globalBestMove.remove(0);
+        for (Integer i : globalBestMove) {
             move.append(i);
             move.append(',');
         }
@@ -35,7 +60,12 @@ public class ComputerPlayer extends Player {
     }
 
     private int maxi(Board board, int evaluation, int alpha, int beta, int depth, int color) {
-        if (depth == 0 || board.hasWinner()) {
+        int timePassed = (int)(System.currentTimeMillis() - startTime) / 1000;
+        if (timePassed >= MAX_TIME) {
+            timeout = true;
+            return alpha;
+        }
+        if (depth == 0) {
             return evaluation;
         }
         List<List<Integer>> validMoves = board.getAllValidMoves(color);
@@ -47,7 +77,7 @@ public class ComputerPlayer extends Player {
             copy.move(direction, move, color);
             int eval = evaluateBoard(copy, oldScore, color);
             int rating = mini(copy.deepCopy(), eval, alpha, beta,
-                            depth - 1, Marble.getNextColor(color, players));
+                    depth - 1, Marble.getNextColor(color, players));
             if (rating > alpha) {
                 alpha = rating;
                 if (depth == DEPTH_SEARCH) {
@@ -62,7 +92,12 @@ public class ComputerPlayer extends Player {
     }
 
     private int mini(Board board, int evaluation, int alpha, int beta, int depth, int color) {
-        if (depth == 0 || board.hasWinner()) {
+        int timePassed = (int)(System.currentTimeMillis() - startTime) / 1000;
+        if (timePassed >= MAX_TIME) {
+            timeout = true;
+            return beta;
+        }
+        if (depth == 0) {
             return evaluation;
         }
         List<List<Integer>> validMoves = board.getAllValidMoves(color);
@@ -74,7 +109,7 @@ public class ComputerPlayer extends Player {
             copy.move(direction, move, color);
             int eval = evaluateBoard(copy, oldScore, color);
             int rating = maxi(copy.deepCopy(), eval, alpha, beta,
-                            depth - 1, Marble.getNextColor(color, players));
+                    depth - 1, Marble.getNextColor(color, players));
             if (rating <= beta) {
                 beta = rating;
             }

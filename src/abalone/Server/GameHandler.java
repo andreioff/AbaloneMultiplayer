@@ -54,14 +54,8 @@ public class GameHandler implements Runnable {
      **/
 
     public void run() {
-
-        boolean continueGame = true;
-        while (continueGame) {
-            board.reset();
-            play();
-            continueGame = false;
-        }
-
+        board.reset();
+        play();
     }
 
     /**
@@ -126,11 +120,11 @@ public class GameHandler implements Runnable {
             }
         }
         if (nrPlayers == 4) {
-            outcome += Marble.colors[index] + " && " + Marble.colors[getTeammateColor(index + 1) - 1];
+            outcome += players.get(index).getName() + " && " + players.get(getTeammateColor(index + 1) - 1).getName();
         } else if (wasEqual && index == 0) {
             outcome +=  "";
         } else {
-            outcome += Marble.colors[index];
+            outcome += players.get(index).getName();
         }
         return outcome;
     }

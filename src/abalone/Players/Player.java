@@ -1,4 +1,4 @@
-package abalone.Client;
+package abalone.Players;
 
 import abalone.Game.Board;
 import abalone.Game.Marble;
@@ -9,19 +9,6 @@ public  abstract class Player {
 
     private String name;
     private int color;
-    private GameClientView view;
-    /**
-     * Creates a new player object.
-     * @requires name is not null.
-     * @requires the nr of the color.
-     * @ensures the name of the player.
-     * @ensures the player's colour.
-     **/
-
-    public Player(String name, GameClientView view) {
-        this.name = name;
-        this.view = view;
-    }
 
     /**
      * Creates a new player object.
@@ -77,6 +64,6 @@ public  abstract class Player {
      * @param board != null
      * @return the move made
      */
-    public abstract String determineMove(Board board, GameClientView view);
+    public abstract String determineMove(Board board);
 
 }

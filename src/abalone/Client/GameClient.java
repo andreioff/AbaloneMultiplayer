@@ -2,6 +2,9 @@ package abalone.Client;
 
 import abalone.Exceptions.ClientDisconnected;
 import abalone.Game.Board;
+import abalone.Players.ComputerPlayer;
+import abalone.Players.HumanPlayer;
+import abalone.Players.Player;
 import abalone.Protocol.ClientProtocol;
 import abalone.Protocol.ProtocolMessages;
 import abalone.Exceptions.ExitProgram;
@@ -19,12 +22,14 @@ public class GameClient implements ClientProtocol {
     private GameClientTUI view;
     private String name;
     private Player player;
+    private Player hintPlayer;
     private Board board;
     private boolean wantsToPlay;
     private int gamesPlayed;
+    private int players;
 
     /**
-     * Constructs a new HotelClient. Initialises the view.
+     * Constructs a new GameClient. Initialises the view.
      */
     public GameClient() {
         view = new GameClientTUI(this);
@@ -52,6 +57,9 @@ public class GameClient implements ClientProtocol {
             }
         } catch (ExitProgram | ProtocolException | ServerUnavailableException | ClientDisconnected e) {
             view.showMessage(e.getMessage());
+            closeConnection();
+        } catch (NullPointerException e) {
+            view.showMessage("The connection with the server was lost!");
             closeConnection();
         }
     }
@@ -189,6 +197,7 @@ public class GameClient implements ClientProtocol {
             for (int i = 0; i < playerNames.length; i++) {
                 if (playerNames[i].contentEquals(name)) {
                     player.setColor(i + 1);
+                    if (hintPlayer != null) hintPlayer.setColor(i + 1);
                     break;
                 }
             }
@@ -207,7 +216,7 @@ public class GameClient implements ClientProtocol {
             throws ServerUnavailableException, ProtocolException {
         String name = getNameFromUser();
         int players = getNumberOfPlayers();
-        String playerType = getPlayerType();
+        initializePlayer(players);
         String nameAlreadyExist = ProtocolMessages.INVALID + ProtocolMessages.DELIMITER + "invalidname";
 
         sendMessage(ProtocolMessages.HELLO + ProtocolMessages.DELIMITER
@@ -220,15 +229,12 @@ public class GameClient implements ClientProtocol {
                     + name + ProtocolMessages.DELIMITER + players);
             receivedMessage = readLineFromServer();
         }
-        
+
         String expectedMessage = ProtocolMessages.JOIN + ProtocolMessages.DELIMITER + name;
         if (receivedMessage.contentEquals(expectedMessage)) {
             this.name = name;
-            if (playerType.contentEquals("-H")) {
-                player = new HumanPlayer(name, view);
-            } else {
-                player = new ComputerPlayer(name, view, 0, players);
-            }
+            player.setName(name);
+            this.players = players;
         } else {
             throw new ProtocolException("Could not handshake with the server!");
         }
@@ -266,50 +272,58 @@ public class GameClient implements ClientProtocol {
     }
 
     public String getMove() {
-        return ProtocolMessages.MOVE + ProtocolMessages.DELIMITER + player.determineMove(board, view);
+        return ProtocolMessages.MOVE + ProtocolMessages.DELIMITER + player.determineMove(board);
     }
+
+    public String getHint() {
+        String[] move = hintPlayer.determineMove(board).split(ProtocolMessages.DELIMITER);
+        return "Direction: " + move[0] + "; Indexes: " + move[1];
+    };
 
     @Override
     public void newGame() throws ServerUnavailableException {
         if (gamesPlayed > 0) {
-            int players = getNumberOfPlayers();
-            String playerType = getPlayerType();
-            if (playerType.contentEquals("-H")) {
-                player = new HumanPlayer(name, view);
-            } else {
-                player = new ComputerPlayer(name, view, 0, players);
-            }
+            players = getNumberOfPlayers();
+            initializePlayer(players);
+            player.setName(name);
             sendMessage(ProtocolMessages.GAME + ProtocolMessages.DELIMITER + name
                              + ProtocolMessages.DELIMITER + players);
         }
     }
 
-    public void playGame() throws ClientDisconnected {
-        String current;
+    public void initializePlayer(int players) {
+        String playerType = "-H";
+        int seconds;
+        if (players == 2) {
+            playerType = getPlayerType();
+        }
+        if (playerType.contentEquals("-C")) {
+            seconds = view.getInt("Choose how long do you want the AI to think: \n" +
+                    "Input a number of seconds between 3 and 25: ");
+            while (seconds < 3 || seconds > 25) {
+                seconds = view.getInt("Invalid number of seconds.\n" +
+                        "Please choose a number of seconds between 3 and 25: ");
+            }
+            player = new ComputerPlayer(name, players, seconds);
+        } else if (players == 2) {
+            seconds = view.getInt("Choose how long do you want the AI to think for a hint: \n" +
+                    "Input a number of seconds between 3 and 10: ");
+            while (seconds < 3 || seconds > 10) {
+                seconds = view.getInt("Invalid nr of seconds.\n" +
+                        "Please choose a number of seconds between 3 and 25: ");
+            }
+            hintPlayer = new ComputerPlayer(name, players, seconds);
+            player = new HumanPlayer(name, view);
+        } else {
+            player = new HumanPlayer(name, view);
+        }
+    }
+
+    public void playGame() throws ClientDisconnected, NullPointerException {
         try {
             String incoming;
             while ((incoming = in.readLine()).charAt(0) != 'x') {
-                if (incoming.charAt(0) == 'b') {
-                    setBoard(incoming.substring(3, incoming.length() - 1));
-                    view.showMessage(board.toString());
-                } else if (incoming.charAt(0) == 'n') {
-                    current = incoming.split(ProtocolMessages.DELIMITER)[1];
-                    if (current.contentEquals(name)) {
-                        view.showMessage("It is now your turn!");
-                        view.start();
-                    } else {
-                        view.showMessage("It is " + current + "'s turn!");
-                    }
-                } else if (incoming.charAt(0) == ProtocolMessages.INVALID) {
-                    view.showMessage("Invalid move! Please try again");
-                    view.start();
-                } else if (incoming.charAt(0) == ProtocolMessages.DISCONNECT) {
-                    String disconnectedName = incoming.split(ProtocolMessages.DELIMITER)[1];
-                    if (disconnectedName.contentEquals(name)) {
-                        throw new ClientDisconnected("You have been disconnected for being afk!");
-                    }
-                    view.showMessage("Player " + disconnectedName + " has disconnected!");
-                }
+                handleResponse(incoming);
             }
             String[] splittedIncoming = incoming.split(ProtocolMessages.DELIMITER);
             String result = splittedIncoming.length == 1 ? "The game has ended in a draw!"
@@ -323,13 +337,45 @@ public class GameClient implements ClientProtocol {
         }
     }
 
-    public void setBoard(String array) {
-        board.setBoardFromArray(array);
+    public void handleResponse(String incoming) throws ServerUnavailableException, ClientDisconnected {
+        String current;
+        switch (incoming.charAt(0)) {
+            case ProtocolMessages.BOARD:
+                setBoard(incoming.substring(3, incoming.length() - 1));
+                view.showMessage(board.toString());
+                break;
+
+            case ProtocolMessages.NEXT:
+                current = incoming.split(ProtocolMessages.DELIMITER)[1];
+                if (current.contentEquals(name)) {
+                    view.showMessage("It is now your turn!");
+                    if (players == 2 && hintPlayer != null) {
+                        view.showMessage("Please wait! Calculating the hint...");
+                        view.showMessage(getHint());
+                    }
+                    view.start();
+                } else {
+                    view.showMessage("It is " + current + "'s turn!");
+                }
+                break;
+
+            case ProtocolMessages.INVALID:
+                view.showMessage("Invalid move! Please try again");
+                view.start();
+                break;
+
+            case ProtocolMessages.DISCONNECT:
+                String disconnectedName = incoming.split(ProtocolMessages.DELIMITER)[1];
+                if (disconnectedName.contentEquals(name)) {
+                    throw new ClientDisconnected("You have been disconnected for being afk!");
+                }
+                view.showMessage("Player " + disconnectedName + " has disconnected!");
+                break;
+        }
     }
 
-    @Override
-    public void sendExit() {
-
+    public void setBoard(String array) {
+        board.setBoardFromArray(array);
     }
 
     /**

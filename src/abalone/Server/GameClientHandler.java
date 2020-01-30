@@ -26,8 +26,10 @@ public class GameClientHandler implements Runnable {
     private BufferedWriter out;
     private Socket sock;
 
-    /** The connected HotelServer */
+    /** The connected GameServer */
     private GameServer srv;
+
+    private GameServerView view;
 
     private String name;
 
@@ -44,7 +46,7 @@ public class GameClientHandler implements Runnable {
      * @param srv  The connected server
      * @param name The name of this ClientHandler
      */
-    public GameClientHandler(Socket sock, GameServer srv, String name) {
+    public GameClientHandler(Socket sock, GameServer srv, String name, GameServerView view) {
         try {
             in = new BufferedReader(
                     new InputStreamReader(sock.getInputStream()));
@@ -53,6 +55,7 @@ public class GameClientHandler implements Runnable {
             this.sock = sock;
             this.srv = srv;
             this.name = name;
+            this.view = view;
         } catch (IOException e) {
             shutdown();
         }
@@ -67,9 +70,8 @@ public class GameClientHandler implements Runnable {
         try {
             msg = in.readLine();
             while (msg != null && !isDisconnected()) {
-                System.out.println("> [" + name + "] Incoming: " + msg);
+                view.showMessage("> [" + name + "] Incoming: " + msg);
                 handleCommand(msg);
-                out.flush();
                 msg = in.readLine();
             }
             if (isDisconnected()) {
@@ -98,7 +100,6 @@ public class GameClientHandler implements Runnable {
         String command;
         String param, param2;
         String[] splitted;
-
         splitted = msg.split(ProtocolMessages.DELIMITER);
         command = splitted[0];
         param = null;
@@ -111,40 +112,31 @@ public class GameClientHandler implements Runnable {
             param2 = splitted[2];
         }
 
-        if (command.length() == 1) {
-            switch (command.charAt(0)) {
-                case ProtocolMessages.HELLO:
-                    handleHello(param, param2);
-                    break;
+        switch (command.charAt(0)) {
+            case ProtocolMessages.HELLO:
+                handleHello(param, param2);
+                break;
 
-                case ProtocolMessages.MOVE:
-                    move = param + ProtocolMessages.DELIMITER + param2;
-                    receivedMove.set(true);
-                    break;
+            case ProtocolMessages.MOVE:
+                move = param + ProtocolMessages.DELIMITER + param2;
+                receivedMove.set(true);
+                break;
 
-                case ProtocolMessages.GAME:
-                    if (!inGame.get()) {
-                        srv.addInQueue(this, Integer.parseInt(param2));
-                    }
-                    break;
+            case ProtocolMessages.GAME:
+                if (!inGame.get()) {
+                    srv.addInQueue(this, Integer.parseInt(param2));
+                }
+                break;
 
-                case ProtocolMessages.DISCONNECT:
-                    out.write("");
-                    break;
-
-                default:
-                    out.write(ProtocolMessages.INVALID + ProtocolMessages.DELIMITER + "im");
-                    break;
-            }
-        } else {
-            out.write("Command must have only 1 character.");
+            default:
+                sendNotification(ProtocolMessages.INVALID + ProtocolMessages.DELIMITER + "im");
+                break;
         }
     }
 
     private void handleHello(String p1, String p2) throws IOException {
         if (p1 == null || srv.containsName(p1)) {
-            out.write(ProtocolMessages.INVALID + ProtocolMessages.DELIMITER + "invalidname");
-            out.newLine();
+            sendNotification(ProtocolMessages.INVALID + ProtocolMessages.DELIMITER + "invalidname");
         } else {
             int players;
             try {
@@ -153,11 +145,9 @@ public class GameClientHandler implements Runnable {
                 players = 0;
             }
             if (players > 4 || players < 2) {
-                out.write(ProtocolMessages.INVALID + ProtocolMessages.DELIMITER + "invalidamount");
-                out.newLine();
+                sendNotification(ProtocolMessages.INVALID + ProtocolMessages.DELIMITER + "invalidamount");
             } else {
-                out.write(srv.getHello(p1));
-                out.newLine();
+                sendNotification(srv.getHello(p1));
                 name = p1;
                 srv.addName(name);
                 srv.addInQueue(this, players);
@@ -166,19 +156,17 @@ public class GameClientHandler implements Runnable {
     }
 
     public void makeMove(Board board, int color) throws ClientDisconnected {
-        receivedMove.set(false);
         int seconds;
         long startTime = System.currentTimeMillis();
         long stopTime;
         while (!moveWasReceived()) {
             stopTime = System.currentTimeMillis();
-            seconds = (int)((stopTime - startTime) / 1000);
+            seconds = (int) ((stopTime - startTime) / 1000);
             if (seconds > 30) {
                 disconnected.set(true);
                 throw new ClientDisconnected(name);
             }
         }
-
         String[] split = move.split(";");
         int direction = Integer.parseInt(split[0]);
         String indexes = split[1].substring(1, split[1].length() - 1);
@@ -186,12 +174,13 @@ public class GameClientHandler implements Runnable {
         for (String index : indexes.split(",")) {
             marbles.add(Integer.parseInt(index));
         }
-
         if (!board.move(direction, marbles, color)) {
             receivedMove.set(false);
             sendNotification(ProtocolMessages.INVALID + ProtocolMessages.DELIMITER + "iv");
             makeMove(board, color);
         }
+        receivedMove.set(false);
+        move = null;
     }
 
     /**
@@ -205,6 +194,8 @@ public class GameClientHandler implements Runnable {
             in.close();
             out.close();
             sock.close();
+            in = null;
+            out = null;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -212,9 +203,12 @@ public class GameClientHandler implements Runnable {
 
     public void sendNotification(String msg) {
         try {
-            out.write(msg);
-            out.newLine();
-            out.flush();
+            if (out != null) {
+                view.showMessage("> [" + name + "] Sending: " + msg);
+                out.write(msg);
+                out.newLine();
+                out.flush();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

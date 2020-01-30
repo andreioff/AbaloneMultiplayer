@@ -328,8 +328,7 @@ public class Board {
         }
         return moves;
     }
-
-    //#TODO change this implementation with something with less cloning
+    
     public void validMoves(List<Pair> selection, int color, List<List<Integer>> moves) {
         int size = selection.size();
         for (int i = 0; i < 6; i++) {
@@ -432,7 +431,8 @@ public class Board {
             StringBuilder row = new StringBuilder();
             row.append(String.format("%" + tab + "s", ""));
             for (int j = 0; j < marbelsPerRow; j++) {
-                row.append(board[i][start + j] != null ? " " + board[i][start + j].getColorNr() + "  " : " .  ");
+                row.append(board[i][start + j] != null ? " " + board[i][start + j].getColor().charAt(0) + "  "
+                                                       : " .  ");
             }
             row.append(String.format("%" + tab + "s", ""));
             row.append(splittedIndexesBoard[i]);
@@ -457,7 +457,7 @@ public class Board {
         for (int i = 0; i < 61; i++) {
             field = getField(i);
             fieldColor = field == null ? 0 : field.getColorNr();
-            array.append(Integer.toString(fieldColor)).append(",");
+            array.append(fieldColor).append(",");
         }
         array.setCharAt(array.length() - 1, ']');
 
@@ -469,21 +469,6 @@ public class Board {
         for (int i = 0; i < 61; i++) {
             int color = Integer.parseInt(splittedArray[i]);
             setField(i, color == 0 ? null : new Marble(color));
-        }
-    }
-
-    public static void main(String[] args) {
-        Board board = new Board();
-        board.setup(2);
-        System.out.println(board.toString());
-        List<List<Integer>> list = board.getAllValidMoves(2);
-        for (List<Integer> list1 : list) {
-            System.out.print("Direction: " + list1.get(0) + "; Indexes: ");
-            list1.remove(0);
-            for (Integer i : list1) {
-                System.out.print(i + " ");
-            }
-            System.out.println();
         }
     }
 }

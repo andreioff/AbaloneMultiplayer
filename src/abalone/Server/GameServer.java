@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -70,7 +71,7 @@ public class GameServer implements Runnable, ServerProtocol {
                             + String.format("%02d", next_client_no++);
                     view.showMessage("New client [" + name + "] connected!");
                     GameClientHandler handler =
-                            new GameClientHandler(sock, this, name);
+                            new GameClientHandler(sock, this, name, view);
                     new Thread(handler).start();
                 }
 
@@ -150,7 +151,7 @@ public class GameServer implements Runnable, ServerProtocol {
         names.add(name);
     }
 
-    public boolean containsName(String name) {
+    public synchronized boolean containsName(String name) {
         return names.contains(name);
     }
 
@@ -191,15 +192,14 @@ public class GameServer implements Runnable, ServerProtocol {
 
     // ------------------ Server Methods --------------------------
 
-    @Override
     public String getHello(String name) {
         return ProtocolMessages.JOIN + ProtocolMessages.DELIMITER + name;
     }
 
-    //#TODO shuffle players before creating the game
     @Override
     public void startGame(List<GameClientHandler> queue) {
         List<GameClientHandler> players = new ArrayList<>();
+        Collections.shuffle(queue);
         String startMsg = getStartMessage(queue);
         for (GameClientHandler client : queue) {
             players.add(client);
@@ -212,7 +212,6 @@ public class GameServer implements Runnable, ServerProtocol {
 
     public String getStartMessage(List<GameClientHandler> queue) {
         StringBuilder msg = new StringBuilder(ProtocolMessages.START + ProtocolMessages.DELIMITER + '[');
-        int size = queue.size();
         for (GameClientHandler client : queue) {
             msg.append(client.getName()).append(',');
         }
@@ -222,10 +221,10 @@ public class GameServer implements Runnable, ServerProtocol {
 
     // ------------------ Main --------------------------
 
-    /** Start a new HotelServer */
+    /** Start a new GameServer */
     public static void main(String[] args) {
         GameServer server = new GameServer();
-        System.out.println("Welcome to the Game Server! Starting...");
+        System.out.println("Welcome to the Abalone Game's Server! Starting...");
         new Thread(server).start();
     }
 
