@@ -17,7 +17,6 @@ public class ProtocolMessages {
      * The following chars are both used by the TUI to receive user input, and the
      * server and client to distinguish messages.
      */
-    public static final char EXIT = 'x';
     public static final char INVALID = 'e';
     public static final char JOIN = 'j';
     public static final char START = 's';
@@ -25,7 +24,6 @@ public class ProtocolMessages {
     public static final char BOARD = 'b';
     public static final char NEXT = 'n';
     public static final char END = 'x';
-    public static final char REMATCH = 'r';
     public static final char GAME = 'g';
     public static final char DISCONNECT = 'd';
 }

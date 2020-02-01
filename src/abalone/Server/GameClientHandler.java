@@ -76,7 +76,7 @@ public class GameClientHandler implements Runnable {
             }
             if (isDisconnected()) {
                 sendNotification(ProtocolMessages.DISCONNECT + ProtocolMessages.DELIMITER + name);
-                sendNotification(ProtocolMessages.EXIT + ProtocolMessages.DELIMITER);
+                sendNotification(ProtocolMessages.END + ProtocolMessages.DELIMITER);
             }
             shutdown();
         } catch (IOException e) {
