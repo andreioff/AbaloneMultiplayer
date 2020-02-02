@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Server for Networked Game Application
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public class GameServer implements Runnable, ServerProtocol {
 
-    /** The ServerSocket of this HotelServer */
+    /** The ServerSocket of this GameServer */
     private ServerSocket ssock;
 
     /** List of names of the players, one for each connected client */
@@ -28,18 +29,23 @@ public class GameServer implements Runnable, ServerProtocol {
     /** Next client number, increasing for every new connection */
     private int next_client_no;
 
-    /** The view of this HotelServer */
+    /** The view of this GameServer */
     private GameServerTUI view;
 
+    /**
+     * Queues for different type of games
+     */
     private List<GameClientHandler> queue2;
-
     private List<GameClientHandler> queue3;
-
     private List<GameClientHandler> queue4;
 
     /**
-     * Constructs a new HotelServer. Initializes the clients list,
-     * the view and the next_client_no.
+     * A lock to ensure security against concurrency when methods that modify the queues are called simultaneously
+     */
+    private ReentrantLock lock;
+    /**
+     * Constructs a new GameServer. Initializes the names list, the queues,
+     * the view, the next_client_no and the lock.
      */
     public GameServer() {
         names = new ArrayList<>();
@@ -48,6 +54,7 @@ public class GameServer implements Runnable, ServerProtocol {
         queue4 = new ArrayList<>();
         view = new GameServerTUI();
         next_client_no = 1;
+        lock = new ReentrantLock();
     }
 
     /**
@@ -132,19 +139,32 @@ public class GameServer implements Runnable, ServerProtocol {
      * @requires client != null
      */
     public synchronized void removeClient(GameClientHandler client) {
-        names.remove(client.getName());
+        boolean done = false;
+        boolean isLocked;
+        while (!done) {
+            isLocked = lock.tryLock();
+            if (!isLocked) {
+                try {
+                    lock.lock();
+                    names.remove(client.getName());
 
-        boolean result = queue2.remove(client);
-        List<GameClientHandler> queue = queue2;
-        if (!result) {
-            result = queue3.remove(client);
-            queue = queue3;
+                    boolean result = queue2.remove(client);
+                    List<GameClientHandler> queue = queue2;
+                    if (!result) {
+                        result = queue3.remove(client);
+                        queue = queue3;
+                    }
+                    if (!result) {
+                        queue4.remove(client);
+                        queue = queue4;
+                    }
+                    notifyPlayersDisconnection(queue, client.getName());
+                    done = true;
+                } finally {
+                    lock.unlock();
+                }
+            }
         }
-        if (!result) {
-            queue4.remove(client);
-            queue = queue4;
-        }
-        notifyPlayersDisconnection(queue, client.getName());
     }
 
     /**
@@ -176,24 +196,37 @@ public class GameServer implements Runnable, ServerProtocol {
      * @requires players >= 1 && players <= 4
      */
     public synchronized void addInQueue(GameClientHandler client, int players) {
-        List<GameClientHandler> queue;
-        switch(players) {
-            case 2:
-                queue = queue2;
-                break;
+        boolean done = false;
+        boolean isLocked;
+        while (!done) {
+            isLocked = lock.tryLock();
+            if (!isLocked) {
+                try {
+                    lock.lock();
+                    List<GameClientHandler> queue;
+                    switch (players) {
+                        case 2:
+                            queue = queue2;
+                            break;
 
-            case 3:
-                queue = queue3;
-                break;
+                        case 3:
+                            queue = queue3;
+                            break;
 
-            default:
-                queue = queue4;
-                break;
-        }
-        notifyPlayersJoin(client, queue);
-        queue.add(client);
-        if (queue.size() == players) {
-            startGame(queue);
+                        default:
+                            queue = queue4;
+                            break;
+                    }
+                    notifyPlayersJoin(client, queue);
+                    queue.add(client);
+                    if (queue.size() == players) {
+                        startGame(queue);
+                    }
+                    done = true;
+                } finally {
+                    lock.unlock();
+                }
+            }
         }
     }
 

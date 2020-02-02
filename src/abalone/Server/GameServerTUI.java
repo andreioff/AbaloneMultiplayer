@@ -23,11 +23,20 @@ public class GameServerTUI implements GameServerView {
         in = new BufferedReader(new InputStreamReader(System.in));
     }
 
+    /**
+     * Show a the given message to the console
+     * @param message the message to write to the standard output.
+     */
     @Override
     public void showMessage(String message) {
         console.println(message);
     }
 
+    /**
+     * Asks the user to input a String.
+     * @param question The question to show to the user
+     * @returns a string with the input of the user
+     */
     @Override
     public String getString(String question) {
         showMessage(question);
@@ -40,6 +49,11 @@ public class GameServerTUI implements GameServerView {
         return input;
     }
 
+    /**
+     * Asks the user to input a valid integer.
+     * @param question The question to show to the user
+     * @returns the integer entered by the user
+     */
     @Override
     public int getInt(String question) {
         showMessage(question);
@@ -52,6 +66,11 @@ public class GameServerTUI implements GameServerView {
         return input;
     }
 
+    /**
+     * Asks the user a yes or no question. If the user enters "yes" the method return true otherwise false.
+     * @param question The question to show to the user
+     * @returns true if the user entered "yes" and false otherwise
+     */
     @Override
     public boolean getBoolean(String question) {
         showMessage(question);

@@ -8,24 +8,9 @@
   <component name="ChangeListManager">
     <list default="true" id="06ca6a79-2409-4054-a9c2-f58ea0ae9239" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/abalone/Game/Board.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/abalone/Game/Board.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/abalone/Test/BoardTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/abalone/Test/BoardTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/abalone/Test/ServerTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AbaloneMultiplayer/abalone/Test/TestClient.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/abalone/Client/GameClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Client/GameClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/abalone/Client/GameClientTUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Client/GameClientTUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/abalone/Client/GameClientView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Client/GameClientView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/abalone/Game/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Game/Board.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/abalone/Game/CompareByDirection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Game/CompareByDirection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/abalone/Game/Marble.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Game/Marble.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/abalone/Game/Pair.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Game/Pair.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/abalone/Players/ComputerPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Players/ComputerPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/abalone/Players/HumanPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Players/HumanPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/abalone/Players/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Players/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/abalone/Server/GameClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Server/GameClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/abalone/Server/GameHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Server/GameHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/abalone/Server/GameServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Server/GameServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/abalone/Test/BoardTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Test/BoardTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/abalone/Server/GameServerTUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Server/GameServerTUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/abalone/Strategies/SmartStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/abalone/Strategies/SmartStrategy.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -296,12 +281,12 @@
       <screen x="0" y="27" width="1366" height="691" />
     </state>
     <state x="455" y="152" width="446" height="447" key="chooseDestDirectoryDialog/0.27.1366.691@0.27.1366.691" timestamp="1579084979538" />
-    <state x="414" y="271" key="com.intellij.ide.util.TipDialog" timestamp="1580631513101">
+    <state x="414" y="271" key="com.intellij.ide.util.TipDialog" timestamp="1580651824951">
       <screen x="0" y="27" width="1680" height="973" />
     </state>
     <state x="379" y="206" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1579724805558" />
     <state x="337" y="200" key="com.intellij.ide.util.TipDialog/0.27.1366.691@0.27.1366.691" timestamp="1580472939451" />
-    <state x="414" y="271" key="com.intellij.ide.util.TipDialog/0.27.1680.973@0.27.1680.973" timestamp="1580631513101" />
+    <state x="414" y="271" key="com.intellij.ide.util.TipDialog/0.27.1680.973@0.27.1680.973" timestamp="1580651824951" />
     <state x="430" y="364" width="646" height="243" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1579449882576">
       <screen x="0" y="27" width="1680" height="973" />
     </state>
