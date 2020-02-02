@@ -29,12 +29,27 @@ public class GameClientHandler implements Runnable {
     /** The connected GameServer */
     private GameServer srv;
 
+    /**
+     * The view of the server to be used for outputting the incoming commands
+     */
     private GameServerView view;
 
+    /**
+     * The name of the client connected to the server.
+     */
     private String name;
 
+    /**
+     * The move command received from the client. This string is used by the game itself to make the move of the client
+     * on the server's board.
+     */
     private String move;
 
+    /**
+     * Atomic flags used to signal the states of this object or variables of it. (the client is disconnected, the
+     * client is in game or the move was received or not. These variables, being Atomic instead of normal type,
+     * ensures the security against concurrency.
+     */
     private final AtomicBoolean disconnected = new AtomicBoolean(false);
     private final AtomicBoolean receivedMove = new AtomicBoolean(false);
     private final AtomicBoolean inGame = new AtomicBoolean(false);
@@ -45,6 +60,7 @@ public class GameClientHandler implements Runnable {
      * @param sock The client socket
      * @param srv  The connected server
      * @param name The name of this ClientHandler
+     * @param view The view of the server
      */
     public GameClientHandler(Socket sock, GameServer srv, String name, GameServerView view) {
         try {
@@ -94,7 +110,7 @@ public class GameClientHandler implements Runnable {
      * message to the server.
      *
      * @param msg command from client
-     * @throws IOException if an IO errors occur.
+     * @throws IOException if an IO error occur.
      */
     private void handleCommand(String msg) throws IOException {
         String command;
@@ -118,11 +134,13 @@ public class GameClientHandler implements Runnable {
                 break;
 
             case ProtocolMessages.MOVE:
+                //if a move is received, pass it to the move variable and flag that the variable contains a new move
                 move = param + ProtocolMessages.DELIMITER + param2;
                 receivedMove.set(true);
                 break;
 
             case ProtocolMessages.GAME:
+                //only clients that are not in a game are allowed to request to join in a new game.
                 if (!inGame.get()) {
                     srv.addInQueue(this, Integer.parseInt(param2));
                 }
@@ -134,7 +152,14 @@ public class GameClientHandler implements Runnable {
         }
     }
 
-    private void handleHello(String p1, String p2) throws IOException {
+    /**
+     * Handles the handshake with the client. Sends proper messages (as described in the protocol) if the parameters
+     * are invalid. If the parameters are valid, send the hello message and add the client in a queue based on the
+     * players amount.
+     * @param p1 = the name of the client connected
+     * @param p2 = the amount of players that the client specified
+     */
+    private void handleHello(String p1, String p2) {
         if (p1 == null || srv.containsName(p1)) {
             sendNotification(ProtocolMessages.INVALID + ProtocolMessages.DELIMITER + "invalidname");
         } else {
@@ -155,6 +180,15 @@ public class GameClientHandler implements Runnable {
         }
     }
 
+    /**
+     * While the flag that the move was received by the client is not set, count how many seconds passed and disconnect
+     * the client if 30 seconds have passed. If the flag is set meanwhile, process the move and try to make it. If the
+     * move is invalid send a message back to the client and wait for a new move. Else, make the move and unset
+     * the flag.
+     * @param board = the board of the game
+     * @param color = the color that makes a move
+     * @throws ClientDisconnected if no message is received from the client within 30 seconds
+     */
     public void makeMove(Board board, int color) throws ClientDisconnected {
         int seconds;
         long startTime = System.currentTimeMillis();
@@ -185,7 +219,7 @@ public class GameClientHandler implements Runnable {
 
     /**
      * Shut down the connection to this client by closing the socket and
-     * the In- and OutputStreams.
+     * the In- and OutputStreams and removing this object from any queue or list.
      */
     private void shutdown() {
         System.out.println("> [" + name + "] Shutting down...");
@@ -201,6 +235,10 @@ public class GameClientHandler implements Runnable {
         }
     }
 
+    /**
+     * Sends the given message to the client through the socket outstream.
+     * @param msg = the message to be sent
+     */
     public void sendNotification(String msg) {
         try {
             if (out != null) {
@@ -214,18 +252,34 @@ public class GameClientHandler implements Runnable {
         }
     }
 
+    /**
+     * Returns the state of the disconnected flag
+     * @returns the boolean value of the disconnected flag. (true if the flag is set and false otherwise).
+     */
     private boolean isDisconnected() {
         return disconnected.get();
     }
 
+    /**
+     * Returns the state of the receivedMove flag
+     * @returns the boolean value of the receivedMove flag. (true if the flag is set and false otherwise).
+     */
     private boolean moveWasReceived() {
         return receivedMove.get();
     }
 
+    /**
+     * Sets the state of the inGame flag (true if the client is in game and false otherwise)
+     * @param value = the value that the flag should be set to.
+     */
     public void setInGameStatus(boolean value) {
         inGame.set(value);
     }
 
+    /**
+     * Returns the name of this client handler
+     * @returns the name of this object
+     */
     public String getName() {
         return name;
     }

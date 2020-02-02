@@ -2,7 +2,6 @@ package abalone.Server;
 
 import abalone.Exceptions.ClientDisconnected;
 import abalone.Game.Board;
-import abalone.Game.Marble;
 import abalone.Protocol.ProtocolMessages;
 
 import java.util.List;
@@ -37,7 +36,8 @@ public class GameHandler implements Runnable {
     private int current;
 
     /**
-     * Game class constructor.
+     * Creates a new GameHandler
+     * @param playerArr = the list of GameClientHandlers that will take part in this game
      **/
     public GameHandler(List<GameClientHandler> playerArr) {
         board = new Board();
@@ -50,7 +50,7 @@ public class GameHandler implements Runnable {
 
     /**
      * Starts the game.
-     * @requires nrPlayers > 0
+     * @requires nrPlayers >= 2 && nrPlayers <= 4
      **/
 
     public void run() {
@@ -59,7 +59,7 @@ public class GameHandler implements Runnable {
     }
 
     /**
-     * @return the current state of the game.
+     * Sends to each client the board and who is the next player
      */
     public void update() {
         String sendBoard = ProtocolMessages.BOARD + ProtocolMessages.DELIMITER + board.toArrayString();
@@ -99,8 +99,7 @@ public class GameHandler implements Runnable {
     }
 
     /**
-     * score != null
-     * Prints the result of the game.
+     * @returns the outcome of the game (winner/s name/s or empty string for draw)
      */
     public String getOutcome() {
         String outcome = ProtocolMessages.END + ProtocolMessages.DELIMITER;
@@ -129,12 +128,20 @@ public class GameHandler implements Runnable {
         return outcome;
     }
 
+    /**
+     * Sets the in game status of each client handler to the speficied value
+     * @param value the value that the status should be set to
+     */
     private void setPlayersInGameStatus(boolean value) {
         for (GameClientHandler player : players) {
             player.setInGameStatus(value);
         }
     }
 
+    /**
+     * Sends to each client the given msg
+     * @param msg = the message to be sent
+     */
     public void sendMessage(String msg) {
         for (GameClientHandler player : players) {
             player.sendNotification(msg);
@@ -143,7 +150,7 @@ public class GameHandler implements Runnable {
 
     /**
      * Returns whether the game is over or not.
-     * @return true if the game is over, false otherwise.
+     * @returns true if the game is over, false otherwise.
      */
     public boolean gameOver() {
         return (board.hasWinner() || turns == NUMBER_OF_TURNS);
@@ -151,7 +158,8 @@ public class GameHandler implements Runnable {
 
     /**
      * Returns the board.
-     * @return the board
+     * @returns the board
+     * @ensures return != null
      */
     public Board getBoard() {
         return board;

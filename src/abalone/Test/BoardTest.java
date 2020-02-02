@@ -22,6 +22,7 @@ public class BoardTest {
         board = new Board();
     }
 
+    //Test if the maps of the board are initialized properly
     @Test
     public void testSetupHashesAndGetHashes() {
         Map<Integer, Pair> INDEXCELL = board.getINDEXCELL();
@@ -43,6 +44,7 @@ public class BoardTest {
         assertEquals(60, CELLINDEX.get(new Pair(8, 4)));
     }
 
+    //test if the reset function resets the board to the current nr of players setup
     @Test
     public void testReset() {
         board.setup(4);
@@ -98,7 +100,7 @@ public class BoardTest {
     }
 
     @Test
-    public void testIncreasePlayersAndGetScore() {
+    public void testIncreaseAndGetScore() {
         board.setup(3);
         board.increaseScore(1);
         board.increaseScore(2);
@@ -112,8 +114,9 @@ public class BoardTest {
         assertEquals(3, score[2]);
     }
 
+    //test if the increaseScore method increase the score of both teammates
     @Test
-    public void testGetScore4Players() {
+    public void testIncreaseAndGetScore4Players() {
         board.setup(4);
         board.increaseScore(1);
         board.increaseScore(2);
@@ -132,12 +135,8 @@ public class BoardTest {
     @Test
     public void testIsWinner() {
         board.setup(3);
-        board.increaseScore(1);
-        board.increaseScore(1);
-        board.increaseScore(1);
-        board.increaseScore(1);
-        board.increaseScore(1);
-        board.increaseScore(1);
+        for (int i = 0; i < 6; i++)
+            board.increaseScore(1);
         board.increaseScore(2);
         assertTrue(board.isWinner(1));
         assertFalse(board.isWinner(2));
@@ -145,15 +144,12 @@ public class BoardTest {
         assertFalse(board.isWinner(4));
     }
 
+    //test if both teammates are winners
     @Test
     public void testIsWinner4Players() {
         board.setup(4);
-        board.increaseScore(1);
-        board.increaseScore(1);
-        board.increaseScore(1);
-        board.increaseScore(1);
-        board.increaseScore(1);
-        board.increaseScore(1);
+        for (int i = 0; i < 6; i++)
+            board.increaseScore(1);
         board.increaseScore(2);
         assertTrue(board.isWinner(1));
         assertFalse(board.isWinner(2));
@@ -164,16 +160,13 @@ public class BoardTest {
     @Test
     public void testHasWinner() {
         board.setup(4);
-        board.increaseScore(4);
-        board.increaseScore(4);
-        board.increaseScore(4);
-        board.increaseScore(4);
-        board.increaseScore(4);
-        board.increaseScore(1);
-        board.increaseScore(1);
+        for (int i = 0; i < 5; i++)
+            board.increaseScore(4);
+        for (int i = 0; i < 3; i++)
+            board.increaseScore(1);
         board.increaseScore(3);
-        board.increaseScore(1);
         board.increaseScore(3);
+
         assertFalse(board.hasWinner());
         board.increaseScore(4);
         assertTrue(board.hasWinner());
@@ -196,6 +189,19 @@ public class BoardTest {
         assertEquals(4, p.second());
     }
 
+    //check if the given lists of indexes are columns
+    /*
+    the representation of the selected indexes on the board
+            .   .   .   .   .
+         .   .   .   .   .   .
+       W   .   .   .   .   .   W
+     W   .   .   .   .   .   .   W  only this line should be considered a column
+   W   W   W   .   .   .   .   .   W
+     .   .   .   .   .   .   .   .
+       .   .   .   .   .   .   .
+         .   .   .   .   .   .
+           .   .   .   .   .
+     */
     @Test
     public void testIsColumn() {
         int[][] indexes = {
@@ -215,11 +221,23 @@ public class BoardTest {
         }
     }
 
+    /*
+    the representation of the selected indexes on the board
+           .   .   .   .   .
+         .   .   .   .   .   .
+       .   .   .   .   W   .   .
+     .   .   .   .   W   .   .   .
+   .   .   .   .   W   .   W   W   W only this line should be considered a row
+     .   .   .   .   .   .   .   .
+       W   .   .   .   .   .   .
+         W   .   .   .   .   .
+           W   .   .   .   .
+     */
     @Test
     public void testIsRow() {
         int[][] indexes = {
                 {32, 33, 34},
-                {15, 23, 30},
+                {15, 22, 30},
                 {43, 50, 56},
         };
         boolean[] results = {true, false, false};
@@ -234,12 +252,23 @@ public class BoardTest {
         }
     }
 
+    /*
+           .   .   .   .   .
+         .   .   .   .   .   .
+       .   .   .   .   .   .   .
+     .   .   .   W   .   .   .   .
+   .   .   .   .   W   .   W   W   W
+     .   .   .   .   W   .   .   .
+       .   .   .   .   .   .   W
+         .   .   .   .   .   W  only this line should be considered a diagonal
+           .   .   .   .   W
+     */
     @Test
     public void testIsDiagonal() {
         int[][] indexes = {
                 {49, 55, 60},
                 {21, 30, 39},
-                {40, 41, 42},
+                {32, 33, 34},
         };
         boolean[] results = {true, false, false};
 
@@ -253,12 +282,14 @@ public class BoardTest {
         }
     }
 
+    //check if the updatePosition method moves a marble correctly
     @Test
     public void testUpdatePosition() {
         board.setup(2);
         board.setField(30, new Marble(1));
         board.updatePosition(board.getCell(30), 0, 1);
         assertEquals(1, board.getField(22).getColorNr());
+        //after the marble was moved, the old position should be null
         assertNull(board.getField(30));
 
         board.setField(26, board.getField(30));
@@ -268,6 +299,29 @@ public class BoardTest {
         assertEquals(1, board.getScore()[1]);
     }
 
+    /*
+    Before
+           .   .   .   .   .
+         .   .   .   .   .   .
+       .   .   .   .   .   .   .
+     .   .   .   .   .   .   .   .
+   .   .   .   .   .   .   .   .   .
+     .   .   .   .   .   .   .   .
+       .   .   .   .   .   .   W
+         .   .   .   .   .   W
+           .   .   .   .   W
+
+     After
+        .   .   .   .   .
+         .   .   .   .   .   .
+       .   .   .   .   .   .   .
+     .   .   .   .   .   .   .   .
+   .   .   .   .   .   .   .   .   .
+     .   .   .   .   .   .   W   .
+       .   .   .   .   .   W   .
+         .   .   .   .   W   .
+           .   .   .   .   .
+     */
     @Test
     public void testMoveMarbles() {
         int[] indexes = {49, 55, 60};
@@ -287,16 +341,42 @@ public class BoardTest {
         }
     }
 
+    /*
+     Before
+           W   W   W   W   W
+         W   W   W   W   W   W
+       .   .   W   W   W   .   .
+     .   .   .   .   .   .   .   .
+   .   .   .   .   .   .   .   .   .
+     .   .   .   .   .   W   W   B  this line will be moved
+       .   .   B   B   B   .   .
+         B   B   B   B   B   B
+           B   B   B   B   B
+
+       After
+           W   W   W   W   W
+         W   W   W   W   W   W
+       .   .   W   W   W   .   .
+     .   .   .   .   .   .   .   .
+   .   .   .   .   .   .   .   .   .
+     .   .   .   .   .   .   W   W pushed the enemy off the board
+       .   .   B   B   B   .   .
+         B   B   B   B   B   B
+           B   B   B   B   B
+     */
     @Test
     public void testMoveMarblesSumito() {
         board.setup(2);
-        int[] indexes = {42, 41, 40};
+        int[] indexes = {41, 40};
         List<Pair> cells = new ArrayList<>();
 
         for (int index : indexes) {
             board.setField(index, new Marble(1));
             cells.add(board.getCell(index));
         }
+        board.setField(42, new Marble(2));
+        cells.add(0, board.getCell(42));
+
         board.moveMarbles(1, cells, 1);
 
         assertEquals(1, board.getField(41).getColorNr());
@@ -342,6 +422,17 @@ public class BoardTest {
         assertTrue(board.colorMatch(board.getCell(10), 4));
     }
 
+    /*
+            W   W   .   B   B                       00  01  02  03  04
+         W   W   .   .   B   B                   05  06  07  08  09  10
+       W   W   .   .   .   B   B               11  12  13  14  15  16  17
+     W   W   .   .   .   .   B   B           18  19  20  21  22  23  24  25
+   W   W   .   .   .   .   .   B   B       26  27  28  29  30  31  32  33  34
+     W   .   .   .   .   .   .   B           35  36  37  38  39  40  41  42
+       .   .   .   .   .   .   .               43  44  45  46  47  48  49
+         Y   Y   Y   Y   Y   Y                   50  51  52  53  54  55
+           Y   Y   Y   Y   Y                       56  57  58  59  60
+     */
     @Test
     public void testCheckSelection() {
         board.setup(3);
@@ -374,11 +465,23 @@ public class BoardTest {
         }
     }
 
+    /*
+    Test if the players can or cannot select combinations of the following rows
+            .   .   .   .   .
+         .   .   .   .   .   .
+       .   .   .   .   .   .   .
+     .   .   .   .   .   .   .   .
+   .   .   W   W   W   Y   Y   Y   .
+     .   B   B   B   R   R   R   .
+       .   .   .   .   .   .   .
+         .   .   .   .   .   .
+           .   .   .   .   .
+     */
     @Test
     public void testCheckSelection4Players() {
         board.setup(4);
 
-        for (int i = 27; i <= 43; i++) {
+        for (int i = 0; i < 61; i++) {
             board.setField(i, null);
         }
         for (int i = 0; i < 3; i++) {
@@ -413,6 +516,20 @@ public class BoardTest {
         }
     }
 
+    /*
+        .   .   .   .   .
+         .   .   .   .   .   .
+       .   .   .   .   .   .   .
+     .   .   .   W   W   .   .   .
+   .   .   .   W   Y   Y   .   .   .
+     .   .   .   Y   Y   .   .   .
+       .   .   .   .   .   .   .
+         .   .   .   .   .   .
+           .   .   .   .   .
+      The board is setup just for the number of player, so that the function can be called. White makes team with yellow
+      Test if the marbles that is pushing has the color of the current player, and not vice versa.
+      The marbles set by the setup method are ignored in the above representations.
+     */
     @Test
     public void testCheckInLineMove4Players() {
         board.setup(4);
@@ -442,7 +559,19 @@ public class BoardTest {
             assertFalse(board.checkInLineMove4Players(directions[i + 3], cells, 1));
         }
     }
-    
+
+    /*
+            .   .   W   W   B
+         .   .   W   W   B   .
+       .   .   W   W   W   B   .
+     .   .   .   .   .   .   W   B
+   .   .   .   .   W   W   W   B   Y
+     .   .   .   W   W   B   W   .
+       .   .   .   W   W   B   Y
+         .   .   .   .   .   .
+           .   .   .   .   .
+           Each row contains a case. All moves will be made to the right
+     */
     @Test
     public void testCheckSumito() {
         int[][] selections = {
@@ -479,14 +608,26 @@ public class BoardTest {
         }
     }
 
+    /*
+           .   .   W   Y   B
+         .   .   Y   W   B   .
+       .   .   W   W   Y   B   .
+     .   .   .   .   .   W   Y   W
+   .   .   .   .   W   Y   B   W   .
+     .   .   .   Y   W   B   R   .
+       .   .   .   .   .   .   .
+         .   .   .   .   .   .
+           .   .   .   .   .
+           Each row contains a case. All moves will be made to the right
+     */
     @Test
     public void testCheckSumito4Players() {
         board.setup(4);
         for (int i = 0; i < 61; i++)
             board.setField(i, null);
 
-        int[] indexes = {2, 3, 4, 7, 8, 9, 13, 14, 15, 16, 23, 24, 25, 26, 27, 30, 31, 32, 33, 38, 39, 40, 41};
-        int[] colors = {1, 3, 2, 3, 1, 2, 1, 1, 3, 2, 1, 3, 1, 2, 4, 1, 3, 2, 1, 3, 1, 2, 4};
+        int[] indexes = {2, 3, 4, 7, 8, 9, 13, 14, 15, 16, 23, 24, 25, 30, 31, 32, 33, 38, 39, 40, 41};
+        int[] colors = {1, 3, 2, 3, 1, 2, 1, 1, 3, 2, 1, 3, 1, 1, 3, 2, 1, 3, 1, 2, 4};
 
         for (int i = 0; i < indexes.length; i++) {
             board.setField(indexes[i], new Marble(colors[i]));
@@ -512,6 +653,18 @@ public class BoardTest {
         }
     }
 
+    /*
+            .   W   W   W   .
+         W   W   W   B   Y   Y
+       .   .   .   .   .   .   .
+     .   .   .   .   .   W   W   B
+   .   .   .   .   .   W   W   Y   B
+     .   .   .   W   W   W   B   B
+       .   .   .   W   B   .   .
+         .   .   W   .   .   .
+           .   W   .   .   .
+           Each row contains a case, except the last 3 rows that are a whole test. All moves will be made to the right
+     */
     @Test
     public void testCheckMove() {
         int[][] selections = {
@@ -547,6 +700,18 @@ public class BoardTest {
         }
     }
 
+    /*
+            .   W   W   Y   .
+         W   Y   Y   .   .   .
+       .   .   .   .   .   .   .
+     .   .   .   .   Y   Y   W   .
+   .   .   .   .   W   Y   W   W   R
+     .   .   .   W   .   Y   .   .  these last lines contains 2 tests
+       .   .   Y   .   Y   .   .
+         .   W   .   W   W   .
+           .   .   .   .   .
+         Each row contains a case, except the last 3 occupied rows. All moves will be made to the right
+     */
     @Test
     public void testCheckMove4Players() {
         board.setup(4);
@@ -581,9 +746,35 @@ public class BoardTest {
         }
     }
 
+    /*
+    Before.
+            .   .   .   .   .
+         .   .   .   .   .   .
+       .   B   .   .   .   .   .
+     .   .   B   .   .   .   .   B
+   .   .   .   B   .   .   .   .   B
+     .   .   .   .   .   B   B   W
+       .   .   .   .   .   .   .
+         .   .   .   .   .   .
+           .   .   .   .   .
+
+     After
+            .   .   .   .   .
+         .   .   .   .   .   .
+       .   .   .   .   .   .   .
+     .   B   .   .   .   .   .   B
+   .   .   B   .   .   .   .   .   B
+     .   .   B   .   .   .   B   B
+       .   .   .   .   .   .   .
+         .   .   .   .   .   .
+           .   .   .   .   .
+           The setup is used only for the number of players. The marbles set by the setup method are ignored
+           in the above representations.
+     */
     @Test
     public void testMove() {
         board.setup(2);
+
         int[][] selections = {
                 {20, 12, 29},
                 {41, 40},
@@ -623,10 +814,34 @@ public class BoardTest {
         assertEquals(2, board.getField(34).getColorNr());
     }
 
+    /*
+    Before
+    .   .   .   .   .
+         .   .   .   .   .   .
+       .   B   .   .   .   .   .
+     .   .   R   .   .   .   .   R
+   .   .   .   B   .   .   .   .   B
+     .   .   .   .   .   B   R   Y
+       .   .   .   .   .   .   .
+         .   .   .   .   .   .
+           .   .   .   .   .
+
+     After
+            .   .   .   .   .
+         .   .   .   .   .   .
+       .   .   .   .   .   .   .
+     .   B   .   .   .   .   .   R
+   .   .   R   .   .   .   .   .   B
+     .   .   B   .   .   .   B   R
+       .   .   .   .   .   .   .
+         .   .   .   .   .   .
+           .   .   .   .   .
+      Black makes team with blue
+     */
     @Test
     public void testMove4Players() {
         board.setup(4);
-        for (int i = 11; i <= 42; i++) {
+        for (int i = 0; i < 61; i++) {
             board.setField(i, null);
         }
 
@@ -668,5 +883,46 @@ public class BoardTest {
 
         assertEquals(4, board.getField(25).getColorNr());
         assertEquals(2, board.getField(34).getColorNr());
+    }
+
+    /*
+            .   .   .   .   .
+         .   .   .   .   .   .
+       .   .   .   .   .   .   .
+     .   .   .   .   .   .   .   .
+   .   .   .   .   .   .   W   W   B
+     .   .   .   .   .   .   .   .
+       .   .   .   .   .   .   .
+         .   .   .   .   .   .
+           .   .   .   .   .
+     The first position in each list of the expectedResult is the index of the direction expected
+     */
+    @Test
+    public void testGetAllValidMove() {
+        List<List<Integer>> expectedResult = new ArrayList<>(Arrays.asList(
+                Arrays.asList(0, 32),
+                Arrays.asList(0, 33, 32),
+                Arrays.asList(1, 33, 32),
+                Arrays.asList(2, 32, 33),
+                Arrays.asList(3, 32, 33),
+                Arrays.asList(4, 32, 33),
+                Arrays.asList(5, 32, 33),
+                Arrays.asList(2, 32),
+                Arrays.asList(3, 32),
+                Arrays.asList(4, 32),
+                Arrays.asList(5, 32),
+                Arrays.asList(0, 33),
+                Arrays.asList(2, 33),
+                Arrays.asList(3, 33),
+                Arrays.asList(5, 33)
+        ));
+
+        board.setField(32, new Marble(1));
+        board.setField(33, new Marble(1));
+        board.setField(34, new Marble(2));
+        List<List<Integer>> actualResult = board.getAllValidMoves(1);
+        for (int i = 0; i < actualResult.size(); i++) {
+            assertEquals(expectedResult.get(i), actualResult.get(i));
+        }
     }
 }

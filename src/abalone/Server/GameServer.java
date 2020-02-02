@@ -52,7 +52,7 @@ public class GameServer implements Runnable, ServerProtocol {
 
     /**
      * Opens a new socket by calling {@link #setup()} and starts a new
-     * HotelClientHandler for every connecting client.
+     * GameClientHandler for every connecting client.
      *
      * If {@link #setup()} throws a ExitProgram exception, stop the program.
      * In case of any other errors, ask the user whether the setup should be
@@ -128,7 +128,7 @@ public class GameServer implements Runnable, ServerProtocol {
     }
 
     /**
-     * Removes a clientHandler from the client list.
+     * Removes a clientHandler from the queue where is waiting and his name from the names list.
      * @requires client != null
      */
     public synchronized void removeClient(GameClientHandler client) {
@@ -147,14 +147,34 @@ public class GameServer implements Runnable, ServerProtocol {
         notifyPlayersDisconnection(queue, client.getName());
     }
 
+    /**
+     *  Add a name in the names list
+     * @param name = the name that should be added
+     * @requires name != null
+     * @ensures names.contains(name)
+     */
     public synchronized void addName(String name) {
         names.add(name);
     }
 
+    /**
+     * Checks if the given name is contained in the list of names
+     * @param name = the name that should be searched for
+     * @returns true if the given name is contained in the names list and false otherwise
+     * @requires name != null
+     */
     public synchronized boolean containsName(String name) {
         return names.contains(name);
     }
 
+    /**
+     * Adds the given client handler to the queue based on the number of players specified by the client and
+     * starts a new game if there are enough players in the queue.
+     * @param client = the client handler to be added in the queue
+     * @param players = the number of players that the game should have based on the client's preference
+     * @requires client != null
+     * @requires players >= 1 && players <= 4
+     */
     public synchronized void addInQueue(GameClientHandler client, int players) {
         List<GameClientHandler> queue;
         switch(players) {
@@ -177,6 +197,14 @@ public class GameServer implements Runnable, ServerProtocol {
         }
     }
 
+    /**
+     * Sends to the players that are already waiting in the queue that a new player has joined and send the names
+     * of all the players that are waiting in the queue to the client that just connected
+     * @param currentClient = the client handler of the client that just connected
+     * @param queue = the queue where the client handler should be added
+     * @requires currentClient != null
+     * @requires queue != null
+     */
     public void notifyPlayersJoin(GameClientHandler currentClient, List<GameClientHandler> queue) {
         for (GameClientHandler client : queue) {
             client.sendNotification(ProtocolMessages.JOIN + ProtocolMessages.DELIMITER + currentClient.getName());
@@ -184,6 +212,13 @@ public class GameServer implements Runnable, ServerProtocol {
         }
     }
 
+    /**
+     * Notify all the players in a queue that a player has disconnected
+     * @param queue = the queue with the players that should be notified
+     * @param name = the name of the player that disconnected
+     * @requires queue != null
+     * @requires name != null
+     */
     public void notifyPlayersDisconnection(List<GameClientHandler> queue, String name) {
         for (GameClientHandler client : queue) {
             client.sendNotification(ProtocolMessages.DISCONNECT + ProtocolMessages.DELIMITER + name);
@@ -192,10 +227,19 @@ public class GameServer implements Runnable, ServerProtocol {
 
     // ------------------ Server Methods --------------------------
 
+    /**
+     * Returns the hello command that should be returned to the client that made the handshake with the server
+     * @param name = the name of the client
+     * @returns a String object containing the hello message that should be sent to the client
+     */
     public String getHello(String name) {
         return ProtocolMessages.JOIN + ProtocolMessages.DELIMITER + name;
     }
 
+    /**
+     * Start a new game with the players from the given queue on a new thread.
+     * @param queue = the queue of client handlers that the game should be created with.
+     */
     @Override
     public void startGame(List<GameClientHandler> queue) {
         List<GameClientHandler> players = new ArrayList<>();
@@ -210,6 +254,11 @@ public class GameServer implements Runnable, ServerProtocol {
         (new Thread(game)).start();
     }
 
+    /**
+     * Creates and returns the start game message that should be sent to all clients.
+     * @param queue = the queue with the client handlers that will be put in a game
+     * @returns the start game command with all the clients names
+     */
     public String getStartMessage(List<GameClientHandler> queue) {
         StringBuilder msg = new StringBuilder(ProtocolMessages.START + ProtocolMessages.DELIMITER + '[');
         for (GameClientHandler client : queue) {

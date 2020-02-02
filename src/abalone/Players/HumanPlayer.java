@@ -7,19 +7,25 @@ import abalone.Protocol.ProtocolMessages;
 public class HumanPlayer extends Player {
     private GameClientView view;
     /**
-     * Creates a new player object.
+     * Creates a new human player object.
      *
-     * @param name != null
-     * @requires name is not null
-     * @requires the number of the color
-     * @ensures the name of the player
-     * @ensures the player's color
+     * @param name = the name that this player should have
+     * @param view = the view that this player should use to ask the user to input a move
+     * @requires name != null
+     * @requires view != null
      */
     public HumanPlayer(String name, GameClientView view) {
         super(name);
         this.view = view;
     }
 
+    /**
+     * Continuously ask the user to input a list of indexes in the correct format and a valid direction and returns
+     * them as a string
+     * @param board = the board of the game
+     * @returns a String object containing the move entered by the user.
+     * @ensures return != null
+     */
     @Override
     public String determineMove(Board board) {
 
@@ -51,6 +57,11 @@ public class HumanPlayer extends Player {
         return move.toString();
     }
 
+    /**
+     * Returns a list that explains where each direction points to.
+     * @return a String object containing the explanation where each direction points to.
+     * @ensures return != null
+     */
     private String getDirectionsLegend() {
         return "Here is the list with the possible directions:\n" +
                 "0 -> top-right\n" +

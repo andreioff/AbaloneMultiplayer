@@ -6,11 +6,13 @@ public class Board {
 
     /**
      * Maps a cell's coordinates to the corresponding index.
+     * @invariant  CELLINDEX != null
      */
     private Map<Pair, Integer> CELLINDEX;
 
     /**
      * Maps an index to the corresponding cell coordinates.
+     * @invariant INDEXCELL != null
      */
     private Map<Integer, Pair> INDEXCELL;
 
@@ -106,7 +108,7 @@ public class Board {
     /**
      * Setup the board for a 2 players game.
      * @requires board != null
-     * @ensures board contains 28 Marble objects
+     * @invariant board contains 28 Marble objects
      */
     public void setup2() {
         Pair p;
@@ -131,7 +133,7 @@ public class Board {
     /**
      * Setup the board for a 3 players game.
      * @requires board != null
-     * @ensures board contains 33 Marble objects
+     * @invariant board contains 33 Marble objects
      */
     public void setup3() {
         int marbels = 5;
@@ -148,7 +150,7 @@ public class Board {
     /**
      * Setup the board for a 4 players game.
      * @requires board != null
-     * @ensures board contains 36 Marble objects
+     * @invariant board contains 36 Marble objects
      */
     public void setup4() {
         for (int i = 4; i >= 2; i--) {
@@ -507,7 +509,7 @@ public class Board {
      * @requires color >= 1 && color <= 4
      * @requires directionIndex >= 0 && directionIndex <= 5
      * @ensures all given marbles are moved one position in the given direction
-     * @ensures if a marble is pushed of the board ==> score[color - 1] = old(score[color - 1]) + 1;
+     * @invariant if a marble is pushed of the board ==> score[color - 1] = old(score[color - 1]) + 1;
      */
     public void moveMarbles(int directionIndex, List<Pair> cells, int color) {
         for (Pair cell : cells) {
@@ -544,7 +546,7 @@ public class Board {
      * @param index = the index of a valid field
      * @return a Pair object with the coordinates of the field with the given index
      * @requires isField(index)
-     * @ensures return != null
+     * @invariant return != null
      */
     public Pair getCell(int index) {
         assert isField(index);
@@ -556,7 +558,7 @@ public class Board {
      * @param cell = the pair of coordinates of a valid field
      * @returns an integer representing the index of the field with the given pair of coordinates
      * @requires isField(cell)
-     * @ensures return != null
+     * @invariant return != null
      */
     public int getIndex(Pair cell) {
         assert isField(cell);
@@ -576,7 +578,7 @@ public class Board {
      * @param index = the index of the direction that should be returned
      * @returns a Pair object containing the coordinates of the direction at the given index
      * @requires index >= 0 && index <= 5
-     * @ensures return != null
+     * @invariant return != null
      */
     public Pair getDirection(int index) {
         return directions[index];
@@ -592,7 +594,7 @@ public class Board {
      * @requires color >= 1 && color <= 4
      * @ensures return != null;
      * @ensures return.size() >= 1
-     * @ensures for each list in return, list.size() >= 2 && list.size() <= 4
+     * @invariant for each list in return, list.size() >= 2 && list.size() <= 4
      */
     public List<List<Integer>> getAllValidMoves(int color) {
         List<List<Integer>> moves = new ArrayList<>();
@@ -618,7 +620,7 @@ public class Board {
      * @required selection.size() >= 1 && selection.size() <= 3
      * @requires color >= 1 && color <= 4
      * @requires moves != null
-     * @ensures for each list in moves, list.size() >= 2 && list.size() <= 4
+     * @invariant for each list in moves, list.size() >= 2 && list.size() <= 4
      */
     public void validMoves(List<Pair> selection, int color, List<List<Integer>> moves) {
         int size = selection.size();
@@ -655,7 +657,7 @@ public class Board {
      * Returns a deep copy of the current board.
      * @returns a new Board object identical with the values of this object
      * @ensures !return.equals(this)
-     * @ensures all values of return are identical with this object
+     * @invariant all values of return are identical with this object
      */
     public Board deepCopy() {
         Board copy = new Board();
@@ -768,7 +770,7 @@ public class Board {
      * Returns the Map with indexes as keys and pairs of coordinates as values
      * @return the Map with indexes between 0 and 60 as keys and pairs of coordinates as values
      * @ensures return != null
-     * @ensures return.size() == 61
+     * @invariant return.size() == 61
      */
     public Map<Integer, Pair> getINDEXCELL() {
         return INDEXCELL;
@@ -778,7 +780,7 @@ public class Board {
      * Returns the Map with pairs of coordinates as keys and indexes as values
      * @return the Map with pairs of coordinates as keys and indexes between 0 and 60 as values
      * @ensures return != null
-     * @ensures return.size() == 61
+     * @invariant return.size() == 61
      */
     public Map<Pair, Integer> getCELLINDEX() {
         return CELLINDEX;
