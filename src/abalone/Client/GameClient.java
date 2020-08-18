@@ -300,7 +300,7 @@ public class GameClient implements ClientProtocol {
 
         //regex is used to check if the input is "-H" or "-C"
         while (!playerType.matches("(^-C$)|(^-H$)")) {
-            name = view.getString("Invalid player type! Please choose again:\n"
+            playerType = view.getString("Invalid player type! Please choose again:\n"
                     + "-C (computer player) \n-H (human player)");
         }
         return playerType;
@@ -378,7 +378,7 @@ public class GameClient implements ClientProtocol {
             playerType = getPlayerType();
         }
         if (playerType.contentEquals("-C")) {
-            seconds = view.getInt("Choose how long do you want the AI to think: \n" +
+            seconds = view.getInt("Choose how long do you want the AI to think. \n" +
                     "Input a number of seconds between 3 and 25: ");
             while (seconds < 3 || seconds > 25) {
                 seconds = view.getInt("Invalid number of seconds.\n" +
@@ -386,7 +386,7 @@ public class GameClient implements ClientProtocol {
             }
             player = new ComputerPlayer(name, players, seconds);
         } else if (players == 2) {
-            seconds = view.getInt("Choose how long do you want the AI to think for a hint: \n" +
+            seconds = view.getInt("You will receive hints during your turns! \nChoose how long do you want the AI to think for a hint. \n" +
                     "Input a number of seconds between 3 and 10: ");
             while (seconds < 3 || seconds > 10) {
                 seconds = view.getInt("Invalid nr of seconds.\n" +

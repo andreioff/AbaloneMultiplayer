@@ -60,8 +60,11 @@ public class GameServerTUI implements GameServerView {
         int input = 0;
         try {
             input = Integer.parseInt(in.readLine());
-        } catch (NumberFormatException | IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
+        } catch (NumberFormatException e) {
+            System.out.println("Make sure you enter only digits!");
+            return getInt(question);
         }
         return input;
     }
